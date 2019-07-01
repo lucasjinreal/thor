@@ -1,0 +1,6 @@
+build/
+.idea/
+Thor.*
+cmake-build-debug/
+.vscode/
+build/
