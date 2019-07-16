@@ -1,6 +1,14 @@
 #!/bin/bash
 # this script build cao library automatically
 
+sudo apt install -y libopencv-dev
+sudo apt install -y libfreetype6-dev
+sudo apt install -y libcurl4-openssl-dev
+sudo apt install -y libeigen3-dev
+sudo apt-get install -y libprotobuf-dev
+sudo apt install -y protobuf-compiler
+
+
 sudo chmod -R 777 *
 if [ "$(uname)" == "Darwin" ]; then
     # Do something under Mac OS X platform
@@ -15,7 +23,7 @@ if [ "$(uname)" == "Darwin" ]; then
 elif [ "$(expr substr $(uname -s) 1 5)" == "Linux" ]; then
     # Do something under GNU/Linux platform
     printf "======== installing dependencies on linux ============"
-    sudo apt install libglog-dev
+    sudo apt install -y libglog-dev
     
     mkdir build
     cd build
