@@ -11,6 +11,9 @@
 #include <iomanip>
 #include <iostream>
 
+#include <libgen.h>  // basename
+#include <iostream>  // cerr/cout
+
 #define DISALLOW_COPY_AND_ASSIGN(classname) \
  private:                                   \
   classname(const classname &);             \
@@ -29,4 +32,93 @@
   }                                         \
   DISALLOW_IMPLICIT_CONSTRUCTORS(classname) \
  private:
+
+
+
+///////////////// micros from x start //////////////////////
+#define ClearScreen() printf("\033[H\033[J")
+#define PRINT_COLOR_RED "\033[22;31m"
+#define PRINT_COLOR_GREEN "\033[22;32m"
+#define PRINT_COLOR_YELLOW "\033[22;33m"
+#define PRINT_COLOR_GRAY "\033[22;90m"
+#define PRINT_COLOR_BLUE "\033[22;34m"
+#define PRINT_COLOR_MAGENTA "\033[22;35m"
+#define PRINT_COLOR_CYAN "\033[22;36m"
+#define PRINT_COLOR_RESET "\033[0m"
+#define PRINT_CLEAR_SCREEN "\033[H\033[J";
+
+// inFO, DeBug, WaRn, ERror
+#define FO(__O__) std::cout << PRINT_COLOR_YELLOW " INFO: " << PRINT_COLOR_RESET << __O__ << std::endl
+#define DB(__O__)                                                                                    \
+  std::cout << PRINT_COLOR_GRAY << "  DEBUG " << basename((char*)__FILE__) << ":" << __LINE__ << " " \
+            << PRINT_COLOR_RESET << __O__ << std::endl
+#define WR(__O__) std::cout << PRINT_COLOR_RED "WARN: " << PRINT_COLOR_RESET << __O__ << std::endl
+#define ER(__O__) std::cerr << PRINT_COLOR_RED "ERROR: " << PRINT_COLOR_RESET << __O__ << std::endl
+
+#define FO_EVERY_N(n, arg)                                                                \
+  {                                                                                       \
+    static int PRINT_OCCURRENCES_MOD_N = 0;                                               \
+    if (++PRINT_OCCURRENCES_MOD_N > n) PRINT_OCCURRENCES_MOD_N -= n;                      \
+    if (PRINT_OCCURRENCES_MOD_N == 1)                                                     \
+      std::cout << PRINT_COLOR_YELLOW " INFO: " << PRINT_COLOR_RESET << arg << std::endl; \
+  }
+
+#define DB_EVERY_N(n, arg)                                                                               \
+  {                                                                                                      \
+    static int PRINT_OCCURRENCES_MOD_N = 0;                                                              \
+    if (++PRINT_OCCURRENCES_MOD_N > n) PRINT_OCCURRENCES_MOD_N -= n;                                     \
+    if (PRINT_OCCURRENCES_MOD_N == 1)                                                                    \
+      std::cout << PRINT_COLOR_GRAY << "  DEBUG " << basename((char*)__FILE__) << ":" << __LINE__ << " " \
+                << PRINT_COLOR_RESET << arg << std::endl;                                                \
+  }
+
+#define WR_EVERY_N(n, arg)                                                                                            \
+  {                                                                                                                   \
+    static int PRINT_OCCURRENCES_MOD_N = 0;                                                                           \
+    if (++PRINT_OCCURRENCES_MOD_N > n) PRINT_OCCURRENCES_MOD_N -= n;                                                  \
+    if (PRINT_OCCURRENCES_MOD_N == 1) std::cerr << PRINT_COLOR_RED "WARN: " << PRINT_COLOR_RESET << arg << std::endl; \
+  }
+
+#define ER_EVERY_N(n, arg)                                                                                             \
+  {                                                                                                                    \
+    static int PRINT_OCCURRENCES_MOD_N = 0;                                                                            \
+    if (++PRINT_OCCURRENCES_MOD_N > n) PRINT_OCCURRENCES_MOD_N -= n;                                                   \
+    if (PRINT_OCCURRENCES_MOD_N == 1) std::cerr << PRINT_COLOR_RED "ERROR: " << PRINT_COLOR_RESET << arg << std::endl; \
+  }
+
+// #ifdef NDEBUG
+#define PRINT_RED(__O__) std::cout << PRINT_COLOR_RED << __O__ << PRINT_COLOR_RESET << std::endl
+#define PRINT_GREEN(__O__) std::cout << PRINT_COLOR_GREEN << __O__ << PRINT_COLOR_RESET << std::endl
+#define PRINT_YELLOW(__O__) std::cout << PRINT_COLOR_YELLOW << __O__ << PRINT_COLOR_RESET << std::endl
+#define PRINT_GRAY(__O__) std::cout << PRINT_COLOR_GRAY << __O__ << PRINT_COLOR_RESET << std::endl
+#define PRINT_BLUE(__O__) std::cout << PRINT_COLOR_BLUE << __O__ << PRINT_COLOR_RESET << std::endl
+#define PRINT_MAGENTA(__O__) std::cout << PRINT_COLOR_MAGENTA << __O__ << PRINT_COLOR_RESET << std::endl
+#define PRINT_CYAN(__O__) std::cout << PRINT_COLOR_CYAN << __O__ << PRINT_COLOR_RESET << std::endl
+#define PRINT_WHITE(__O__) std::cout << __O__ << std::endl
+/*
+#else
+#define PRINT_RED(__O__) \
+  {}
+#define PRINT_GREEN(__O__) \
+  {}
+#define PRINT_YELLOW(__O__) \
+  {}
+#define PRINT_GRAY(__O__) \
+  {}
+#define PRINT_BLUE(__O__) \
+  {}
+#define PRINT_MAGENTA(__O__) \
+  {}
+#define PRINT_CYAN(__O__) \
+  {}
+#define PRINT_WHITE(__O__) \
+  {}
+#endif
+*/
+
+
+/////////////////////// micros from x stop ///////////////////////////
+
+
+
 #endif  // SRC_MACRO_H_

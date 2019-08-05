@@ -19,6 +19,9 @@
 #include "thor/slam.h"
 #include "thor/str_util.h"
 #include "thor/vis.h"
+#include "thor/macro.h"
+#include "thor/timer.h"
+
 
 using namespace std;
 using namespace thor;
@@ -52,7 +55,8 @@ static int ToWchar(char *&src, wchar_t *&dest,
 }
 
 int main(int argc, char **argv) {
-  cout << "Welcome!\n";
+  PRINT_GREEN("Welcome!\n");
+
   cout << colors::bold << colors::yellow << "thor lib\n" << colors::reset;
 
   if (thor::os::isdir("../")) {
@@ -92,6 +96,8 @@ int main(int argc, char **argv) {
   wchar_t *w_str;
   ToWchar(str, w_str);
   cvText.putText(img, w_str, cv::Point(50, 100), cv::Scalar(255, 0, 255));
+
+  PRINT_BLUE("test on str utils.");
 
   // add some str util
   string s = "straight docker";
@@ -148,6 +154,22 @@ int main(int argc, char **argv) {
   unique_color = thor::vis::gen_unique_color_cv(43);
   cv::rectangle(img, cv::Point(250, 155), cv::Point(360, 360), unique_color,
                 cv::FILLED, 0);
+
+  thor::Timer timer(20);
+  timer.on();
+
+  cout << "count start..\n";
+  std::chrono::system_clock::time_point tic = std::chrono::system_clock::now();
+  for (int i = 0; i < 3; ++i) {
+    sleep(1);
+  }
+  cout << "cost time: " << timer.lap() << endl;
+
+  std::chrono::system_clock::time_point toc = std::chrono::system_clock::now();
+  std::chrono::duration<double > d = toc - tic;
+  auto d_sec = std::chrono::duration_cast<std::chrono::seconds>(d).count();
+  cout << d.count() << endl;
+  cout << d_sec << endl;
 
 
   cv::imshow("demo", img);

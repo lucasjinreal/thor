@@ -42,7 +42,7 @@ if (USE_OPENCV)
     add_library(thor_static STATIC ${thor_SRCS} ${thor_HEADERS})
     target_link_libraries(thor_static ${OpenCV_LIBS} ${CURL_LIBRARIES} glog freetype ${PROTOBUF_LIBRARY})
 else ()
-    add_library(thor SHARED ${thor_SRCS} ${thor_HEADERS} ${CURL_LIBS} glog freetype)
+    add_library(thor SHARED ${thor_SRCS} ${thor_HEADERS} ${CURL_LIBS} glog freetype include/timer.h)
     add_library(thor_static STATIC ${thor_SRCS} ${thor_HEADERS} ${CURL_LIBS} glog freetype ${PROTOBUF_LIBRARY})
 endif ()
 

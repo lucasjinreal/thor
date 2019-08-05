@@ -711,8 +711,6 @@ constexpr unsigned char kParulaColormap[] = {
     24,  249, 249, 22,  250, 250, 21,  252, 250};
 }  // namespace color
 
-}
-
 }  // namespace vis
 }  // namespace thor
 
