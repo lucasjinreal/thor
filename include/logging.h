@@ -29,19 +29,19 @@ namespace log{
 // LOG()
 #define LOG(status) LOG_##status.stream()
 #define LOG_ERROR LOG_INFO
-#define LOG_INFO LogMessage(__FILE__, __FUNCTION__, __LINE__, "I")
+#define LOG_INFO LogMessageThor(__FILE__, __FUNCTION__, __LINE__, "I")
 #define LOG_WARNING \
-  LogMessage(__FILE__, __FUNCTION__, __LINE__, "W")
+  LogMessageThor(__FILE__, __FUNCTION__, __LINE__, "W")
 #define LOG_FATAL \
-  LogMessageFatal(__FILE__, __FUNCTION__, __LINE__)
-#define VLOG(level) VLogMessage(__FILE__, __FUNCTION__, __LINE__, level).stream()
+  LogMessageThorFatal(__FILE__, __FUNCTION__, __LINE__)
+#define VLOG(level) VLogMessageThor(__FILE__, __FUNCTION__, __LINE__, level).stream()
 
 // CHECK()
 // clang-format off
 #ifdef NDEBUG
-#define CHECK(x) LogMessage(__FILE__, __FUNCTION__, __LINE__).stream()
+#define CHECK(x) LogMessageThor(__FILE__, __FUNCTION__, __LINE__).stream()
 #else // NDEBUG
-#define CHECK(x) if (!(x)) LogMessageFatal(__FILE__, __FUNCTION__, __LINE__).stream() << "Check failed: " #x << ": " // NOLINT(*)
+#define CHECK(x) if (!(x)) LogMessageThorFatal(__FILE__, __FUNCTION__, __LINE__).stream() << "Check failed: " #x << ": " // NOLINT(*)
 #endif // NDEBUG
 
 // clang-format on
@@ -60,19 +60,21 @@ using namespace std;
 
 void gen_log(std::ostream& log_stream_, const char* file, const char* func, int lineno, const char* level, const int kMaxLen=15);
 
-// LogMessage
-class LogMessage {
+// this class should be rename since it's same as GLOG which may cause conflict
+
+// LogMessageThor
+class LogMessageThor {
  public:
 #ifdef NDEBUG
-  LogMessage(...) { }
+  LogMessageThor(...) { }
   std::ostream& stream() { return log_stream_; }
 #else
-  LogMessage(const char* file, const char* func,
+  LogMessageThor(const char* file, const char* func,
              int lineno, const char* level="I")  {
     gen_log(log_stream_, file, func, lineno, level);
   }
 
-  ~LogMessage() {
+  ~LogMessageThor() {
     log_stream_ << '\n';
     fprintf(stderr, "%s", log_stream_.str().c_str());
   }
@@ -81,24 +83,24 @@ class LogMessage {
 #endif // NDEBUG
  protected:
   std::stringstream log_stream_;
-  LogMessage(const LogMessage&) = delete;
-  void operator=(const LogMessage&) = delete;
+  LogMessageThor(const LogMessageThor&) = delete;
+  void operator=(const LogMessageThor&) = delete;
 };
 
 
-// LogMessageFatal
-class LogMessageFatal : public LogMessage {
+// LogMessageThorFatal
+class LogMessageThorFatal : public LogMessageThor {
  public:
 #ifdef NDEBUG
-  LogMessageFatal(...)
-      : LogMessage() {}
+  LogMessageThorFatal(...)
+      : LogMessageThor() {}
   std::ostream& stream() { return log_stream_; }
 #else
-  LogMessageFatal(const char* file, const char* func,
+  LogMessageThorFatal(const char* file, const char* func,
                   int lineno, const char* level="F")
-      : LogMessage(file, func, lineno, level) {}
+      : LogMessageThor(file, func, lineno, level) {}
 
-  ~LogMessageFatal() {
+  ~LogMessageThorFatal() {
     log_stream_ << '\n';
     fprintf(stderr, "%s", log_stream_.str().c_str());
     abort();
@@ -108,13 +110,13 @@ class LogMessageFatal : public LogMessage {
 
 
 // VLOG
-class VLogMessage {
+class VLogMessageThor {
  public:
 #ifdef NDEBUG
-  VLogMessage(...) {}
+  VLogMessageThor(...) {}
   std::ostream& stream() { return log_stream_; }
 #else
-  VLogMessage(const char* file, const char* func,
+  VLogMessageThor(const char* file, const char* func,
               int lineno, const int32_t level_int=0) {
     const char* GLOG_v = std::getenv("GLOG_v");
     GLOG_v_int = (GLOG_v && atoi(GLOG_v) > 0) ? atoi(GLOG_v) : 0;
@@ -126,7 +128,7 @@ class VLogMessage {
     gen_log(log_stream_, file, func, lineno, level);
   }
 
-  ~VLogMessage() {
+  ~VLogMessageThor() {
     if (GLOG_v_int < this->level_int) {
       return;
     }
@@ -140,14 +142,14 @@ class VLogMessage {
   int32_t GLOG_v_int;
   int32_t level_int;
 
-  VLogMessage(const VLogMessage&) = delete;
-  void operator=(const VLogMessage&) = delete;
+  VLogMessageThor(const VLogMessageThor&) = delete;
+  void operator=(const VLogMessageThor&) = delete;
 };
 
 template <typename T>
 T* CheckNotNull(const char *file, int line, const char *names, T* t) {
   if (t == NULL) {
-    LogMessageFatal(file, names, line, "F");
+    LogMessageThorFatal(file, names, line, "F");
   }
   return t;
 }

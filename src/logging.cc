@@ -9,7 +9,7 @@ namespace log{
 void gen_log(std::ostream& log_stream_, const char* file, const char* func, int lineno, const char* level, const int kMaxLen) {
   const int len = strlen(file);
   std::string time_str;
-  struct tm tm_time;  // Time of creation of LogMessage
+  struct tm tm_time;  // Time of creation of LogMessageThor
   time_t timestamp = time(NULL);
   localtime_r(&timestamp, &tm_time);
   struct timeval tv;

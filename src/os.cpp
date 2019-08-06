@@ -9,9 +9,7 @@
 #include <dirent.h>
 #include <valarray>
 #include <include/logging.h>
-
 #include "include/str_util.h"
-
 #include "include/os.h"
 
 
@@ -72,7 +70,7 @@ vector<string> thor::os::list_files(string path, bool full_path) {
 
     vector<string> files;
     if ((dp = opendir(&path[0u])) == nullptr) {
-        LOG(INFO) << "dir not exist....";
+        cerr << "dir not exist....";
     }
     while ((dirP = readdir(dp)) != nullptr) {
         // in xfs file system, d_type always be NULL
@@ -330,7 +328,7 @@ namespace thor{
 namespace os{
 
 string abs_path(const string &path){
-  LOG(INFO) << "abs_path not implement yet.";
+  cerr << "abs_path not implement yet.";
 }
 
 std::string GetAbsolutePath(const std::string &prefix,

@@ -23,7 +23,6 @@
 
 using namespace std;
 using namespace thor::generic;
-using namespace thor::log;
 
 /**
  *  A math module do higher calculate
@@ -191,14 +190,14 @@ bool ContinuousToDiscrete(const Eigen::Matrix<T, L, L> &m_a,
                           Eigen::Matrix<T, O, L> *ptr_c_d,
                           Eigen::Matrix<T, O, N> *ptr_d_d) {
   if (ts <= 0.0) {
-    LOG(ERROR) << "ContinuousToDiscrete : ts is less than or equal to zero";
+    thor::log::LOG(ERROR) << "ContinuousToDiscrete : ts is less than or equal to zero";
     return false;
   }
 
   // Only matrix_a is mandatory to be non-zeros in matrix
   // conversion.
   if (m_a.rows() == 0) {
-    LOG(ERROR) << "ContinuousToDiscrete: matrix_a size 0 ";
+    thor::log::LOG(ERROR) << "ContinuousToDiscrete: matrix_a size 0 ";
     return false;
   }
 

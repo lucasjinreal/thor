@@ -12,16 +12,15 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <cassert>
-#include "logging.h"
 
 using namespace std;
-using namespace thor::log;
 
 
 namespace thor{
-
     namespace os{
-        bool exists(string path);
+//    using namespace ;
+
+    bool exists(string path);
         bool isdir(string path);
         bool isfile(string path);
 

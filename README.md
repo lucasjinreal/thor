@@ -26,7 +26,11 @@ b). If you need full capacity which thor does, including `vis`, `geometry`, `dat
 ./build_full.sh
 ```
 
-*this will build a full version of thor with link to opencv, protobuf, curl, freetype. so if you call any related function, you gonna need link to that lib first in your cmake file.
+*this will build a full version of thor with link to opencv, protobuf, curl, freetype. so if you call any related function, you gonna need link to that lib first in your cmake file.*
+
+
+
+**note**: Our `logging` module using same micro define as glog, so it will conflicts if you importing them both. If your project doesn't need glog and you are using thor, you can simply deprecate glog and using thor only.
 
 
 

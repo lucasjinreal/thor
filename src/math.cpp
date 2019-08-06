@@ -63,8 +63,8 @@ double Sigmoid(const double x) { return 1.0 / (1.0 + std::exp(-x)); }
 
 void RotateAxis(const double theta, const double x0, const double y0,
                 double *x1, double *y1) {
-  CHECK_NOTNULL(x1);
-  CHECK_NOTNULL(y1);
+  thor::log::CHECK_NOTNULL(x1);
+  thor::log::CHECK_NOTNULL(y1);
   const double cos_theta = std::cos(theta);
   const double sin_theta = std::sin(theta);
   *x1 = x0 * cos_theta + y0 * sin_theta;
@@ -110,20 +110,20 @@ bool ContinuousToDiscrete(
     Eigen::MatrixXd *ptr_a_d, Eigen::MatrixXd *ptr_b_d,
     Eigen::MatrixXd *ptr_c_d, Eigen::MatrixXd *ptr_d_d) {
   if (ts <= 0.0) {
-    LOG(ERROR) << "ContinuousToDiscrete : ts is less than or equal to zero";
+    thor::log::LOG(ERROR) << "ContinuousToDiscrete : ts is less than or equal to zero";
     return false;
   }
 
   // Only matrix_a is mandatory to be non-zeros in matrix
   // conversion.
   if (m_a.rows() == 0) {
-    LOG(ERROR) << "ContinuousToDiscrete: matrix_a size 0 ";
+    thor::log::LOG(ERROR) << "ContinuousToDiscrete: matrix_a size 0 ";
     return false;
   }
 
   if (m_a.cols() != m_b.rows() || m_b.cols() != m_d.cols() ||
       m_c.rows() != m_d.rows() || m_a.cols() != m_c.cols()) {
-    LOG(ERROR) << "ContinuousToDiscrete: matrix dimensions mismatch";
+    thor::log::LOG(ERROR) << "ContinuousToDiscrete: matrix dimensions mismatch";
     return false;
   }
   Eigen::MatrixXd m_identity =
