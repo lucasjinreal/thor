@@ -32,6 +32,8 @@ namespace thor {
 namespace datum {
 
 using namespace thor::generic;
+using namespace thor::log;
+
 
 class LineSegment2d {
  public:

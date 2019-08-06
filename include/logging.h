@@ -23,6 +23,9 @@
 
 namespace thor{
 
+namespace log{
+
+
 // LOG()
 #define LOG(status) LOG_##status.stream()
 #define LOG_ERROR LOG_INFO
@@ -151,7 +154,7 @@ T* CheckNotNull(const char *file, int line, const char *names, T* t) {
 
 
 
-
+}
 }
 
 #endif

@@ -4,6 +4,8 @@
 
 namespace thor{
 
+namespace log{
+
 void gen_log(std::ostream& log_stream_, const char* file, const char* func, int lineno, const char* level, const int kMaxLen) {
   const int len = strlen(file);
   std::string time_str;
@@ -28,5 +30,7 @@ void gen_log(std::ostream& log_stream_, const char* file, const char* func, int 
   }
 }
 
+
+}
 
 }

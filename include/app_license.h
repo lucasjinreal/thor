@@ -26,7 +26,7 @@
 
 using namespace std;
 using json = thor::json;
-using namespace thor;
+using namespace thor::log;
 
 namespace thor{
     namespace security{

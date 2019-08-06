@@ -23,7 +23,7 @@
 
 using namespace std;
 using namespace thor::generic;
-using namespace thor;
+using namespace thor::log;
 
 /**
  *  A math module do higher calculate
