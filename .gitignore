@@ -5,3 +5,4 @@ cmake-build-debug/
 .vscode/
 build/
 cmake-build-debug/
+vendor/

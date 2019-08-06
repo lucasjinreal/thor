@@ -5,6 +5,10 @@
  * 
  * */
 
+#ifdef USE_OPENCV
+#ifdef USE_EIGEN
+
+
 #include "include/datum.h"
 #include <cmath>
 
@@ -173,7 +177,7 @@ bool LineSegment2d::GetIntersect(const LineSegment2d &other_segment,
   }
   const double ratio = cc4 / (cc4 - cc3);
   *point = Vector2d(start_.x() * ratio + end_.x() * (1.0 - ratio),
-                 start_.y() * ratio + end_.y() * (1.0 - ratio));
+                    start_.y() * ratio + end_.y() * (1.0 - ratio));
   return true;
 }
 
@@ -1218,3 +1222,7 @@ std::string Polygon2d::DebugString() const {
 
 }  // datum
 } // thor
+
+
+#endif
+#endif

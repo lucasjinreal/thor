@@ -6,6 +6,7 @@
 
 
 
+#ifdef USE_CV_EX
 // ----------------------- implementation of CvxText in opencv ------------------
 thor::CvxText::CvxText(const char *freeType)
 {
@@ -196,3 +197,5 @@ void thor::CvxText::putWChar(cv::Mat &img, wchar_t wc, cv::Point &pos, cv::Scala
 
   pos.x += (int)((cols ? cols : space) + sep);
 }
+
+#endif

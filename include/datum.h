@@ -12,6 +12,11 @@
  *
  * */
 
+
+#ifdef USE_OPENCV
+#ifdef USE_EIGEN
+
+
 #include <iostream>
 #include <limits>
 #include <string>
@@ -28,15 +33,6 @@ namespace datum {
 
 using namespace thor::generic;
 
-
-/**
- *
- *
- * Useful data structures aiming at Autonomous Driving
- *
- *
- *
- */
 class LineSegment2d {
  public:
   LineSegment2d();
@@ -260,5 +256,10 @@ class Polygon2d {
 
 }  // namespace datum
 }  // namespace thor
+
+#endif
+#endif
+
+
 
 #endif //THOR_SRC_CV_EX_H_

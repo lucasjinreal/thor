@@ -10,6 +10,8 @@
 // Created by jintain on 2/15/19.
 //
 
+#ifdef USE_CURL
+
 #include "../include/app_license.h"
 
 thor::security::LicenseChecker::LicenseChecker()
@@ -85,3 +87,4 @@ size_t thor::security::LicenseChecker::WriteCallback(void *contents, size_t size
   ((std::string *)userp)->append((char *)contents, size * nmemb);
   return size * nmemb;
 }
+#endif

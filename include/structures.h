@@ -2,9 +2,12 @@
 #define COMMON_STRUCTURE_H
 
 #include "iostream"
+#include <algorithm>
+
+#ifdef USE_OPENCV
 #include "opencv/cv.hpp"
 #include "opencv2/opencv.hpp"
-#include <algorithm>
+#endif
 
 using namespace std;
 
@@ -116,6 +119,8 @@ struct Box {
   }
 };
 
+
+#ifdef USE_OPENCV
 // human pose decalaration
 struct HumanPose {
   std::vector<cv::Point2f> keypoints;
@@ -179,6 +184,8 @@ struct CameraIntrinsicParams {
 	return camera_mat;
   }
 };
+#endif
+
 }
 
 #endif // COMMON_STRUCTURE_H

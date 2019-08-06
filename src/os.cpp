@@ -72,7 +72,7 @@ vector<string> thor::os::list_files(string path, bool full_path) {
 
     vector<string> files;
     if ((dp = opendir(&path[0u])) == nullptr) {
-        thor::Log(kError, "dir not exist....");
+        LOG(INFO) << "dir not exist....";
     }
     while ((dirP = readdir(dp)) != nullptr) {
         // in xfs file system, d_type always be NULL
@@ -330,7 +330,7 @@ namespace thor{
 namespace os{
 
 string abs_path(const string &path){
-  thor::Log(kInfo, "abs_path not implement yet.");
+  LOG(INFO) << "abs_path not implement yet.";
 }
 
 std::string GetAbsolutePath(const std::string &prefix,

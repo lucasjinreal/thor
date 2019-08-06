@@ -6,6 +6,7 @@
 #define THOR_SRC_CV_EX_H_
 
 
+#ifdef USE_CV_EX
 #include <freetype2/freetype/config/ftheader.h>
 #include FT_FREETYPE_H
 #include <opencv2/opencv.hpp>
@@ -73,8 +74,8 @@ class CvxText
   bool m_fontUnderline;
   float m_fontDiaphaneity;
 };
-
-
 }
+#endif
+
 
 #endif //THOR_SRC_CV_EX_H_

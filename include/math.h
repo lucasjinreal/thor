@@ -5,24 +5,25 @@
 #ifndef CAO_MATH_H
 #define CAO_MATH_H
 
+
+#ifdef USE_EIGEN
+#ifdef USE_OPENCV
+
 #include <cmath>
 #include <vector>
 
 #include "assert.h"
-#include "glog/logging.h"
 #include "opencv2/opencv.hpp"
 
 #include "Eigen/Core"
 #include "Eigen/Eigen"
 
 #include "./generic.h"
+#include "./logging.h"
 
-
-using namespace google;
 using namespace std;
-
 using namespace thor::generic;
-
+using namespace thor;
 
 /**
  *  A math module do higher calculate
@@ -33,13 +34,8 @@ using namespace thor::generic;
 namespace thor {
 namespace math {
 
-// !------------------ define some constants here
 const double kPI = 3.1415926535897932384626433832795;
 
-
-
-
-// !------------------- defines for normalise usage purpose
 template <typename T>
 inline T euclidean(vector<T> const &v_a, vector<T> const &v_b) {
   assert(v_a.size() == v_b.size());
@@ -57,22 +53,21 @@ bool polynomial_curve_fit(std::vector<cv::Point> &key_point, int n, cv::Mat &A);
 ///////////////////// new math APIs //////////////////////////
 inline double Sqr(const double x) { return x * x; };
 
-
 inline double CrossProd(const Vector2d &start_point, const Vector2d &end_point_1,
-                 const Vector2d &end_point_2){
+                        const Vector2d &end_point_2){
   return (end_point_1 - start_point).CrossProd(end_point_2 - start_point);
 }
 inline double InnerProd(const Vector2d &start_point, const Vector2d &end_point_1,
-                 const Vector2d &end_point_2){
+                        const Vector2d &end_point_2){
   return (end_point_1 - start_point).InnerProd(end_point_2 - start_point);
 }
 
 inline double CrossProd(const double x0, const double y0, const double x1,
-                 const double y1) {
+                        const double y1) {
   return x0 * y1 - x1 * y0;
 }
 inline double InnerProd(const double x0, const double y0, const double x1,
-                 const double y1) {
+                        const double y1) {
   return x0 * x1 + y0 * y1;
 }
 
@@ -148,11 +143,11 @@ Eigen::Matrix<T, N, N> PseudoInverse(const Eigen::Matrix<T, N, N> &m,
   Eigen::JacobiSVD<Eigen::Matrix<T, N, N>> svd(
       m, Eigen::ComputeFullU | Eigen::ComputeFullV);
   return svd.matrixV() *
-         (svd.singularValues().array().abs() > epsilon)
-             .select(svd.singularValues().array().inverse(), 0)
-             .matrix()
-             .asDiagonal() *
-         svd.matrixU().adjoint();
+      (svd.singularValues().array().abs() > epsilon)
+          .select(svd.singularValues().array().inverse(), 0)
+          .matrix()
+          .asDiagonal() *
+      svd.matrixU().adjoint();
 }
 
 /**
@@ -209,7 +204,7 @@ bool ContinuousToDiscrete(const Eigen::Matrix<T, L, L> &m_a,
 
   Eigen::Matrix<T, L, L> m_identity = Eigen::Matrix<T, L, L>::Identity();
   *ptr_a_d = PseudoInverse<T, L>(m_identity - ts * 0.5 * m_a) *
-             (m_identity + ts * 0.5 * m_a);
+      (m_identity + ts * 0.5 * m_a);
 
   *ptr_b_d =
       std::sqrt(ts) * PseudoInverse<T, L>(m_identity - ts * 0.5 * m_a) * m_b;
@@ -231,5 +226,11 @@ bool ContinuousToDiscrete(const Eigen::MatrixXd &m_a,
 
 }  // namespace math
 }  // namespace thor
+
+
+
+#endif
+#endif
+
 
 #endif  // CAO_MATH_H

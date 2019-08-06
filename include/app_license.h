@@ -18,14 +18,15 @@
  * executing init() function in our applications
  */
 
+#ifdef USE_CURL
 #include <iostream>
 #include "curl/curl.h"
-#include "glog/logging.h"
 #include "json.h"
+#include "./logging.h"
 
-using namespace google;
 using namespace std;
 using json = thor::json;
+using namespace thor;
 
 namespace thor{
     namespace security{
@@ -51,5 +52,6 @@ namespace thor{
         };
     }
 }
+#endif
 
 #endif //THOR_APP_LICENSE_H

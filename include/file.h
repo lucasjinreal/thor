@@ -17,9 +17,11 @@
 #include <string>
 #include <vector>
 
+
+#ifdef USE_PROTOBUF
 #include "google/protobuf/io/zero_copy_stream_impl.h"
 #include "google/protobuf/text_format.h"
-
+#endif
 
 /**
  *
@@ -31,6 +33,8 @@
 
 namespace thor {
 namespace file {
+
+#ifdef USE_PROTOBUF
 
 template<typename MessageType>
 bool SetProtoToASCIIFile(const MessageType &message, int file_descriptor) {
@@ -106,6 +110,9 @@ bool GetProtoFromFile(const std::string &file_name, MessageType *message) {
   //std::cout << "Called GetProtoFromFile" << std::endl;
   //return GetProtoFromASCIIFile(file_name, message);
 }
+
+
+#endif
 
 }
 }

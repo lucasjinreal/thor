@@ -45,12 +45,8 @@ vector<string> COCO_CLASSES = {
 	"scissors", "teddy bear", "hair drier", "toothbrush"
 };
 
-class BaseDetector {
- public:
-  BaseDetector();
-  void preProcess(cv::Mat &img);
-  void detect();
-};
+
+
 }
 }
 

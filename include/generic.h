@@ -8,12 +8,9 @@
 
 #include <iostream>
 #include <vector>
-
 #include <cmath>
 #include <vector>
-
 #include "assert.h"
-#include "glog/logging.h"
 #include <string>
 
 /**

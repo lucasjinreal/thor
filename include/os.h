@@ -15,6 +15,8 @@
 #include "logging.h"
 
 using namespace std;
+using namespace thor;
+
 
 namespace thor{
 

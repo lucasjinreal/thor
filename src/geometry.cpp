@@ -2,6 +2,7 @@
 // Created by jintian on 19-4-30.
 //
 
+#ifdef USE_EIGEN
 #include "include/geometry.h"
 
 
@@ -31,3 +32,4 @@ Eigen::Quaterniond thor::geometry::EulerAngle2Quaternion(const double yaw, const
   q = R;
   return q;
 }
+#endif

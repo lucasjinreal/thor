@@ -17,7 +17,7 @@ if [ "$(uname)" == "Darwin" ]; then
 
     mkdir build
     cd build
-    cmake ..
+    cmake -DUSE_OPENCV=ON -DUSE_EIGEN=ON -DUSE_PROTOBUF=ON -DUSE_CV_EX=ON -DUSE_CURL=ON ..
     make all -j8
     sudo make install
 elif [ "$(expr substr $(uname -s) 1 5)" == "Linux" ]; then
@@ -27,7 +27,7 @@ elif [ "$(expr substr $(uname -s) 1 5)" == "Linux" ]; then
     
     mkdir build
     cd build
-    cmake ..
+    cmake -DUSE_OPENCV=ON -DUSE_EIGEN=ON -DUSE_PROTOBUF=ON -DUSE_CV_EX=ON -DUSE_CURL=ON ..
     make all -j8
     sudo make install
 

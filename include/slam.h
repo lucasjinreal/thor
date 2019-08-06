@@ -21,6 +21,8 @@
  * 2. compute Rotation and transform
  * 3. etc.
  */
+
+#ifdef USE_OPENCV
 #include "opencv2/opencv.hpp"
 #include <opencv2/core/types.hpp>
 #include <opencv/cv.hpp>
@@ -53,5 +55,7 @@ void computeR_t(vector<cv::Point3f> &pts_obj, vector<cv::Point2f> &pts_img,
                 cv::Mat &camera_matrix, cv::Mat &R, cv::Mat &t, cv::Mat &inliers);
 }
 }
+#endif
+
 
 #endif //THOR_SLAM_H

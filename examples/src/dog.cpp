@@ -8,7 +8,7 @@
 
 
 Dog::Dog(string name) {
-    thor::Log(kInfo, "Building your dog...");
+    LOG(INFO) << "Building your dog...";
     this->_name = name;
 }
 

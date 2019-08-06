@@ -11,6 +11,7 @@
 // Created by jintain on 1/15/19.
 //
 
+#ifdef USE_OPENCV
 #include "include/slam.h"
 
 using namespace thor;
@@ -78,5 +79,6 @@ void slam::getGoodMatchesColor(const cv::Mat &img1, const cv::Mat &img2,
   }
 }
 
+#endif
 
 

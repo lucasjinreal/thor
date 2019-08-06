@@ -4,17 +4,20 @@
  * Implementation of KalmanFilter
  *
  * */
+
+#pragma once
+
 #include <sstream>
 #include <string>
 
 #include "./math.h"
+
+#ifdef USE_EIGEN
 #include "Eigen/Core"
 #include "Eigen/Dense"
 #include "Eigen/Eigen"
 
-#include "glog/logging.h"
 
-using namespace google;
 
 namespace thor {
 namespace algorithm {
@@ -267,3 +270,5 @@ inline std::string KalmanFilter<T, XN, ZN, UN>::DebugString() const {
 }
 }  // namespace algorithm
 }  // namespace thor
+#endif
+

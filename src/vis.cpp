@@ -4,12 +4,6 @@
 
 #include "include/vis.h"
 
-cv::Scalar thor::vis::gen_unique_color_cv(int idx, bool is_track,
-                                          double hue_step, float alpha) {
-  RGBA cr = gen_unique_color(idx, is_track, hue_step, alpha);
-  cv::Scalar c(cr.r, cr.g, cr.b);
-  return c;
-}
 
 thor::vis::RGBA thor::vis::gen_unique_color(int idx, bool is_track,
                                             double hue_step, float alpha) {
@@ -134,6 +128,15 @@ void thor::vis::hsv2rgb(float &r, float &g, float &b, float h, float s,
   }
 }
 
+
+#ifdef USE_OPENCV
+cv::Scalar thor::vis::gen_unique_color_cv(int idx, bool is_track,
+                                          double hue_step, float alpha) {
+  RGBA cr = gen_unique_color(idx, is_track, hue_step, alpha);
+  cv::Scalar c(cr.r, cr.g, cr.b);
+  return c;
+}
+
 cv::Mat thor::vis::createAlpha(cv::Mat &src) {
   cv::Mat alpha = cv::Mat::zeros(src.rows, src.cols, CV_8UC1);
   cv::Mat gray = cv::Mat::zeros(src.rows, src.cols, CV_8UC1);
@@ -166,10 +169,13 @@ int thor::vis::addAlpha(cv::Mat &src, cv::Mat &dst, cv::Mat &alpha) {
   cv::merge(dstChannels, dst);
   return 0;
 }
+#endif
 
 namespace thor {
 namespace vis {
 
+
+#ifdef USE_OPENCV
 /**
  * Human pose order should in OpenPose order
  *
@@ -272,6 +278,8 @@ void renderHumanPoseSimple(std::vector<HumanPose> &poses, cv::Mat &image) {
     }
   }
 }
+#endif
+
 
 }  // namespace vis
 }  // namespace thor

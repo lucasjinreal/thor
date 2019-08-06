@@ -10,9 +10,51 @@
 
 
 
+## Install
+
+a). If you only need thor independent modules without OpenCV or Eigen or Protobuf or Curl, you can simply run:
+
+```
+./build_simple.sh
+```
+
+*this will build a standalone `thor.so` without link any other libs, but if you call any function that needs opencv or protobuf will leads to an error.*
+
+b). If you need full capacity which thor does, including `vis`, `geometry`, `datum` modules, you can run:
+
+```
+./build_full.sh
+```
+
+*this will build a full version of thor with link to opencv, protobuf, curl, freetype. so if you call any related function, you gonna need link to that lib first in your cmake file.
+
+
+
 ## Updates
 
 - **2050.01.01**: to be continue..
+
+- **2019.08.07**: O(∩_∩)O~~!!! A lightweighted logging lib has been integrated into thor!!!!! Now, you can using `LOG(INFO)` without glog:
+
+    ```c++
+    #include "thor/logging.h"
+    
+    using namespace thor;
+    
+    int main() {
+    	LOG(INFO) << "this is a log.";
+    }
+    ```
+
+    We'll see:
+
+    ```
+    I 8/7 11:24:46.484 ...thor_simple.cpp main:28]  this is a log
+    ```
+
+    
+
+- **2019.08.06**: We add precompile define to turn on or off dependencies, such as opencv or protobuf, those dependencies were turned off by default. If you need full version of thor, simple build with `build_full.sh` ;
 
 - **2019.06.16**: Update CMakeLists.txt fix eigen include issue, now users install will not got eigen include not found problem, simply remember to install `libeigen3-dev` first.
 
@@ -85,31 +127,7 @@
 
 
 
-## Install
 
-*thor* is now expanded into a deep learning util library, so there are som prerequirements is needed:
-
-```shell
-sudo apt install libopencv-dev
-sudo apt install libfreetype6-dev
-sudo apt install libcurl4-openssl-dev
-sudo apt install libeigen3-dev
-sudo apt-get install libprotobuf-dev
-sudo apt install protobuf-compiler
-```
-
-Since **thor** is target at *deep learning* purpose, those dependencies is must and enssential. If you are an newbie and got some trouble in install thor, feel free to open an issue about your problem. We will solve that as quickly as possiable.
-After dependencies installation, you can built thor now.
-
-```shell
-git clone https://github.com/jinfagang/thor
-cd thor
-mkdir build && cd build
-cmake ..
-make all -j8
-sudo make install
-```
-We will automatically locate your system installed Eigen, once found, you can using all interfaces with Eigen. If you not install Eigen, just will ignore it.
 
 
 ## Usage

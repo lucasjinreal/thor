@@ -6,7 +6,7 @@
 #define THOR_INCLUDE_GEOMETRY_H_
 
 
-// TODO: this should only built when Eigen exist
+#ifdef USE_EIGEN
 #include "eigen3/Eigen/Core"
 #include "eigen3/Eigen/Dense"
 #include "eigen3/Eigen/Geometry"
@@ -23,5 +23,7 @@ Eigen::Quaterniond EulerAngle2Quaternion(const double yaw, const double pitch,
 
 }
 }
+#endif
+
 
 #endif //THOR_INCLUDE_GEOMETRY_H_
