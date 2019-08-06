@@ -32,5 +32,4 @@ void gen_log(std::ostream& log_stream_, const char* file, const char* func, int 
 
 
 }
-
 }

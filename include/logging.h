@@ -71,7 +71,7 @@ class LogMessageThor {
 #else
   LogMessageThor(const char* file, const char* func,
              int lineno, const char* level="I")  {
-    gen_log(log_stream_, file, func, lineno, level);
+    thor::log::gen_log(log_stream_, file, func, lineno, level);
   }
 
   ~LogMessageThor() {
@@ -125,7 +125,7 @@ class VLogMessageThor {
       return;
     }
     const char* level = to_string(level_int).c_str();
-    gen_log(log_stream_, file, func, lineno, level);
+    thor::log::gen_log(log_stream_, file, func, lineno, level);
   }
 
   ~VLogMessageThor() {

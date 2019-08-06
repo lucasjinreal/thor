@@ -15,7 +15,7 @@
 
 
 using namespace std;
-using namespace thor;
+using namespace thor::log;
 
 int main() {
 
