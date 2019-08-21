@@ -4,10 +4,10 @@
 #include "iostream"
 #include <algorithm>
 
-#ifdef USE_OPENCV
+//#ifdef USE_OPENCV
 #include "opencv/cv.hpp"
 #include "opencv2/opencv.hpp"
-#endif
+//#endif
 
 using namespace std;
 
@@ -120,7 +120,7 @@ struct Box {
 };
 
 
-#ifdef USE_OPENCV
+//#ifdef USE_OPENCV
 // human pose decalaration
 struct HumanPose {
   std::vector<cv::Point2f> keypoints;
@@ -184,7 +184,7 @@ struct CameraIntrinsicParams {
 	return camera_mat;
   }
 };
-#endif
+//#endif
 
 }
 
