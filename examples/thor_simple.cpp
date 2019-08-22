@@ -37,4 +37,7 @@ int main() {
     LOG(INFO) << "this is an video file.";
   }
 
+  LOG(INFO) << "creating some folder recursively.";
+  thor::os::makedirs("data/pointcloud", 07777);
+
 }
