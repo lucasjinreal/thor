@@ -3,7 +3,7 @@ project(thor VERSION 1.3.0 LANGUAGES CXX)
 set(CMAKE_CXX_STANDARD 11)
 
 
-option(USE_OPENCV "enable OpenCV in vis modules" OFF)
+option(USE_OPENCV "enable OpenCV in vis modules" ON)
 option(USE_EIGEN "enable build with eigen" OFF)
 option(USE_CV_EX "enable additional cv draw ability" OFF)
 option(USE_PROTOBUF "enable protobuf related components." OFF)
