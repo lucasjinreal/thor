@@ -4,11 +4,12 @@
 
 #include "include/vis.h"
 
-
 thor::vis::RGBA thor::vis::gen_unique_color(int idx, bool is_track,
-                                            double hue_step, float alpha) {
+                                            double hue_step, float alpha)
+{
   // if idx is track id, the color should be
-  if (is_track) {
+  if (is_track)
+  {
     // we may have 1000+ track ids
     int track_size = 1. / hue_step;
     idx = idx % track_size;
@@ -26,8 +27,10 @@ thor::vis::RGBA thor::vis::gen_unique_color(int idx, bool is_track,
   return rgba;
 }
 
-void thor::vis::hsv2rgb(thor::vis::RGBA &rgba, float h, float s, float v) {
-  if (s == 0) {
+void thor::vis::hsv2rgb(thor::vis::RGBA &rgba, float h, float s, float v)
+{
+  if (s == 0)
+  {
     rgba.r = v;
     rgba.g = v;
     rgba.b = v;
@@ -39,120 +42,132 @@ void thor::vis::hsv2rgb(thor::vis::RGBA &rgba, float h, float s, float v) {
   float q = v * (1.0 - s * f);
   float t = v * (1.0 - s * (1.0 - f));
   i = i % 6;
-  switch (i) {
-    case 0:
-      rgba.r = v;
-      rgba.g = t;
-      rgba.b = p;
-      break;
-    case 1:
-      rgba.r = q;
-      rgba.g = v;
-      rgba.b = p;
-      break;
-    case 2:
-      rgba.r = p;
-      rgba.g = v;
-      rgba.b = t;
-      break;
-    case 3:
-      rgba.r = p;
-      rgba.g = q;
-      rgba.b = v;
-      break;
-    case 4:
-      rgba.r = t;
-      rgba.g = p;
-      rgba.b = v;
-      break;
-    case 5:
-      rgba.r = v;
-      rgba.g = p;
-      rgba.b = q;
-      break;
-    default:
-      break;
+  switch (i)
+  {
+  case 0:
+    rgba.r = v;
+    rgba.g = t;
+    rgba.b = p;
+    break;
+  case 1:
+    rgba.r = q;
+    rgba.g = v;
+    rgba.b = p;
+    break;
+  case 2:
+    rgba.r = p;
+    rgba.g = v;
+    rgba.b = t;
+    break;
+  case 3:
+    rgba.r = p;
+    rgba.g = q;
+    rgba.b = v;
+    break;
+  case 4:
+    rgba.r = t;
+    rgba.g = p;
+    rgba.b = v;
+    break;
+  case 5:
+    rgba.r = v;
+    rgba.g = p;
+    rgba.b = q;
+    break;
+  default:
+    break;
   }
 }
 
 void thor::vis::hsv2rgb(float &r, float &g, float &b, float h, float s,
-                        float v) {
+                        float v)
+{
   double hh, p, q, t, ff;
   long i;
-  if (s <= 0.0) {  // < is bogus, just shuts up warnings
+  if (s <= 0.0)
+  { // < is bogus, just shuts up warnings
     r = float(v);
     g = float(v);
     b = float(v);
   }
   hh = h;
-  if (hh >= 360.0) hh = 0.0;
+  if (hh >= 360.0)
+    hh = 0.0;
   hh /= 60.0;
   i = (long)hh;
   ff = hh - i;
   p = v * (1.0 - s);
   q = v * (1.0 - (s * ff));
   t = v * (1.0 - (s * (1.0 - ff)));
-  switch (i) {
-    case 0:
-      r = v;
-      g = t;
-      b = p;
-      break;
-    case 1:
-      r = q;
-      g = v;
-      b = p;
-      break;
-    case 2:
-      r = p;
-      g = v;
-      b = t;
-      break;
+  switch (i)
+  {
+  case 0:
+    r = v;
+    g = t;
+    b = p;
+    break;
+  case 1:
+    r = q;
+    g = v;
+    b = p;
+    break;
+  case 2:
+    r = p;
+    g = v;
+    b = t;
+    break;
 
-    case 3:
-      r = p;
-      g = q;
-      b = v;
-      break;
-    case 4:
-      r = t;
-      g = p;
-      b = v;
-      break;
-    case 5:
-    default:
-      r = v;
-      g = p;
-      b = q;
-      break;
+  case 3:
+    r = p;
+    g = q;
+    b = v;
+    break;
+  case 4:
+    r = t;
+    g = p;
+    b = v;
+    break;
+  case 5:
+  default:
+    r = v;
+    g = p;
+    b = q;
+    break;
   }
 }
 
-
 #ifdef USE_OPENCV
 cv::Scalar thor::vis::gen_unique_color_cv(int idx, bool is_track,
-                                          double hue_step, float alpha) {
+                                          double hue_step, float alpha)
+{
   RGBA cr = gen_unique_color(idx, is_track, hue_step, alpha);
   cv::Scalar c(cr.r, cr.g, cr.b);
   return c;
 }
 
-cv::Mat thor::vis::createAlpha(cv::Mat &src) {
+cv::Mat thor::vis::createAlpha(cv::Mat &src)
+{
   cv::Mat alpha = cv::Mat::zeros(src.rows, src.cols, CV_8UC1);
   cv::Mat gray = cv::Mat::zeros(src.rows, src.cols, CV_8UC1);
   cv::cvtColor(src, gray, cv::COLOR_RGB2GRAY);
-  for (int i = 0; i < src.rows; i++) {
-    for (int j = 0; j < src.cols; j++) {
+  for (int i = 0; i < src.rows; i++)
+  {
+    for (int j = 0; j < src.cols; j++)
+    {
       alpha.at<uchar>(i, j) = 255 - gray.at<uchar>(i, j);
     }
   }
   return alpha;
 }
 
-int thor::vis::addAlpha(cv::Mat &src, cv::Mat &dst, cv::Mat &alpha) {
-  if (src.channels() == 4) {
+int thor::vis::addAlpha(cv::Mat &src, cv::Mat &dst, cv::Mat &alpha)
+{
+  if (src.channels() == 4)
+  {
     return -1;
-  } else if (src.channels() == 1) {
+  }
+  else if (src.channels() == 1)
+  {
     cv::cvtColor(src, src, cv::COLOR_GRAY2RGB);
   }
 
@@ -171,9 +186,10 @@ int thor::vis::addAlpha(cv::Mat &src, cv::Mat &dst, cv::Mat &alpha) {
 }
 #endif
 
-namespace thor {
-namespace vis {
-
+namespace thor
+{
+namespace vis
+{
 
 #ifdef USE_OPENCV
 /**
@@ -182,43 +198,48 @@ namespace vis {
  * @param poses
  * @param image
  */
-void renderHumanPose(std::vector<HumanPose> &poses, cv::Mat &image) {
+void renderHumanPose(std::vector<HumanPose> &poses, cv::Mat &image)
+{
   // drawing HumanPoses on image
   CV_Assert(image.type() == CV_8UC3);
   const std::vector<cv::Scalar> colors = {
-      cv::Scalar(255, 0, 0),   cv::Scalar(255, 85, 0),  cv::Scalar(255, 170, 0),
+      cv::Scalar(255, 0, 0), cv::Scalar(255, 85, 0), cv::Scalar(255, 170, 0),
       cv::Scalar(255, 255, 0), cv::Scalar(170, 255, 0), cv::Scalar(85, 255, 0),
-      cv::Scalar(0, 255, 0),   cv::Scalar(0, 255, 85),  cv::Scalar(0, 255, 170),
+      cv::Scalar(0, 255, 0), cv::Scalar(0, 255, 85), cv::Scalar(0, 255, 170),
       cv::Scalar(0, 255, 255), cv::Scalar(0, 170, 255), cv::Scalar(0, 85, 255),
-      cv::Scalar(0, 0, 255),   cv::Scalar(85, 0, 255),  cv::Scalar(170, 0, 255),
+      cv::Scalar(0, 0, 255), cv::Scalar(85, 0, 255), cv::Scalar(170, 0, 255),
       cv::Scalar(255, 0, 255), cv::Scalar(255, 0, 170), cv::Scalar(255, 0, 85)};
-  const std::vector<std::pair<int, int> > limbKeypointsIds = {
-      {1, 2}, {1, 5},  {2, 3},   {3, 4},  {5, 6},   {6, 7},
-      {1, 8}, {8, 9},  {9, 10},  {1, 11}, {11, 12}, {12, 13},
-      {1, 0}, {0, 14}, {14, 16}, {0, 15}, {15, 17}};
+  const std::vector<std::pair<int, int>> limbKeypointsIds = {
+      {1, 2}, {1, 5}, {2, 3}, {3, 4}, {5, 6}, {6, 7}, {1, 8}, {8, 9}, {9, 10}, {1, 11}, {11, 12}, {12, 13}, {1, 0}, {0, 14}, {14, 16}, {0, 15}, {15, 17}};
 
   const int stickWidth = 3;
   const cv::Point2f absentKeypoint(-1.0f, -1.0f);
-  for (const auto &pose : poses) {
+  for (const auto &pose : poses)
+  {
     // we only support 18 keypoints
     CV_Assert(pose.keypoints.size() == 18);
 
     for (size_t keypointIdx = 0; keypointIdx < pose.keypoints.size();
-         keypointIdx++) {
-      if (pose.keypoints[keypointIdx] != absentKeypoint) {
+         keypointIdx++)
+    {
+      if (pose.keypoints[keypointIdx] != absentKeypoint)
+      {
         cv::circle(image, pose.keypoints[keypointIdx], 3, colors[keypointIdx],
                    -1);
       }
     }
   }
   cv::Mat pane = image.clone();
-  for (auto &pose : poses) {
-    for (const auto &limbKeypointsId : limbKeypointsIds) {
+  for (auto &pose : poses)
+  {
+    for (const auto &limbKeypointsId : limbKeypointsIds)
+    {
       std::pair<cv::Point2f, cv::Point2f> limbKeypoints(
           pose.keypoints[limbKeypointsId.first],
           pose.keypoints[limbKeypointsId.second]);
       if (limbKeypoints.first == absentKeypoint ||
-          limbKeypoints.second == absentKeypoint) {
+          limbKeypoints.second == absentKeypoint)
+      {
         continue;
       }
 
@@ -236,7 +257,8 @@ void renderHumanPose(std::vector<HumanPose> &poses, cv::Mat &image) {
       cv::fillConvexPoly(pane, polygon, colors[limbKeypointsId.second]);
     }
     // for every pose, if pose has pose_id, means it is tracked
-    if (pose.pose_id != -1) {
+    if (pose.pose_id != -1)
+    {
       // we draw this id
       Box b = pose.to_box();
       cv::putText(image, to_string(pose.pose_id), Point2f(b.xmin, b.ymin),
@@ -248,27 +270,30 @@ void renderHumanPose(std::vector<HumanPose> &poses, cv::Mat &image) {
   cv::addWeighted(image, 0.6, pane, 0.7, 0, image);
 }
 
-void renderHumanPoseSimple(std::vector<HumanPose> &poses, cv::Mat &image) {
+void renderHumanPoseSimple(std::vector<HumanPose> &poses, cv::Mat &image)
+{
   // a more simple render of human pose estimation
   // we can define our own limbKeypoints to unlink some joint
-  const std::vector<std::pair<int, int> > limbKeypointsIds = {
-      {1, 2}, {1, 5},  {2, 3},   {3, 4},  {5, 6},   {6, 7},
-      {1, 8}, {8, 9},  {9, 10},  {1, 11}, {11, 12}, {12, 13},
-      {1, 0}, {0, 14}, {14, 16}, {0, 15}, {15, 17}};
+  const std::vector<std::pair<int, int>> limbKeypointsIds = {
+      {1, 2}, {1, 5}, {2, 3}, {3, 4}, {5, 6}, {6, 7}, {1, 8}, {8, 9}, {9, 10}, {1, 11}, {11, 12}, {12, 13}, {1, 0}, {0, 14}, {14, 16}, {0, 15}, {15, 17}};
   const cv::Point2f absentKeypoint(-1.0f, -1.0f);
-  for (auto &pose : poses) {
-    for (const auto &limbKeypointsId : limbKeypointsIds) {
+  for (auto &pose : poses)
+  {
+    for (const auto &limbKeypointsId : limbKeypointsIds)
+    {
       std::pair<cv::Point2f, cv::Point2f> limbKeypoints(
           pose.keypoints[limbKeypointsId.first],
           pose.keypoints[limbKeypointsId.second]);
       if (limbKeypoints.first == absentKeypoint ||
-          limbKeypoints.second == absentKeypoint) {
+          limbKeypoints.second == absentKeypoint)
+      {
         continue;
       }
       cv::line(image, limbKeypoints.first, limbKeypoints.second,
                Scalar(255, 255, 255), 1);
     }
-    if (pose.pose_id != -1) {
+    if (pose.pose_id != -1)
+    {
       // we draw this id
       Box b = pose.to_box();
       cv::putText(image, to_string(pose.pose_id), Point2f(b.xmin, b.ymin),
@@ -278,8 +303,119 @@ void renderHumanPoseSimple(std::vector<HumanPose> &poses, cv::Mat &image) {
     }
   }
 }
+
+// Draw boxes
+cv::Mat VisualizeDetection(cv::Mat &img, vector<vector<float>> detections, vector<string> classes_names, bool enable_mask, float confidence_threshold, bool normalized)
+{
+  // for visualize
+  const int font = cv::FONT_HERSHEY_TRIPLEX;
+  const float font_scale = 0.6;
+  const int font_thickness = 2;
+  cv::Mat mask = cv::Mat::zeros(img.size(), CV_8UC3);
+  for (int i = 0; i < detections.size(); ++i)
+  {
+    const vector<float> &d = detections[i];
+    // Detection format: [image_id, label, score, xmin, ymin, xmax, ymax].
+    // CHECK_EQ(d.size(), 7);
+    int offset = 0;
+    if (d.size() == 7)
+    {
+      offset = 1;
+    }
+    // cout << "l: " << d[offset + 0] << " score: " << d[offset + 1] << endl;
+    const float score = d[1 + offset];
+    if (score >= confidence_threshold)
+    {
+      cv::Point pt1, pt2;
+      if (normalized)
+      {
+        pt1.x = (img.cols * d[2 + offset]);
+        pt1.y = (img.rows * d[3 + offset]);
+        pt2.x = (img.cols * d[4 + offset]);
+        pt2.y = (img.rows * d[5 + offset]);
+      }
+      else
+      {
+        pt1.x = d[2 + offset];
+        pt1.y = d[3 + offset];
+        pt2.x = d[4 + offset];
+        pt2.y = d[5 + offset];
+      }
+
+      cv::Scalar u_c = thor::vis::gen_unique_color_cv(d[offset]);
+      cv::rectangle(img, pt1, pt2, u_c, 2, 8, 0);
+      cv::rectangle(mask, pt1, pt2, u_c, cv::FILLED, 0);
+
+      char score_str[256];
+      sprintf(score_str, "%.2f", score);
+      std::string label_text = classes_names[d[offset]] + " " + string(score_str);
+      int base_line = 0;
+      cv::Point text_origin = cv::Point(pt1.x - 2, pt1.y - 3);
+      cv::Size text_size = cv::getTextSize(label_text, font, font_scale, font_thickness, &base_line);
+      cv::rectangle(img, cv::Point(text_origin.x, text_origin.y + 5),
+                    cv::Point(text_origin.x + text_size.width, text_origin.y - text_size.height - 5),
+                    u_c, -1, 0);
+      cv::putText(img, label_text, text_origin, font, font_scale, cv::Scalar(0, 0, 0), font_thickness);
+    }
+  }
+  cv::Mat combined;
+  cv::addWeighted(img, 0.8, mask, 0.6, 0.6, combined);
+  // maybe combine a mask img back later
+  return combined;
+}
+
+cv::Mat VisualizeDetection(cv::Mat &img, vector<thor::Box> detections, vector<string> classes_names, bool enable_mask, float confidence_threshold, bool normalized)
+{
+  // for visualize
+  const int font = cv::FONT_HERSHEY_TRIPLEX;
+  const float font_scale = 0.6;
+  const int font_thickness = 2;
+  cv::Mat mask = cv::Mat::zeros(img.size(), CV_8UC3);
+  for (int i = 0; i < detections.size(); ++i)
+  {
+    thor::Box box = detections[i];
+    box.to_xyxy();
+    const float score = box.score;
+    if (score >= confidence_threshold)
+    {
+      cv::Point pt1, pt2;
+      if (normalized)
+      {
+        pt1.x = (img.cols * box.xmin);
+        pt1.y = (img.rows * box.ymin);
+        pt2.x = (img.cols * box.xmax);
+        pt2.y = (img.rows * box.ymax);
+      }
+      else
+      {
+        pt1.x = box.xmin;
+        pt1.y = box.ymin;
+        pt2.x = box.xmax;
+        pt2.y = box.ymax;
+      }
+
+      cv::Scalar u_c = thor::vis::gen_unique_color_cv(box.idx);
+      cv::rectangle(img, pt1, pt2, u_c, 2, 8, 0);
+      cv::rectangle(mask, pt1, pt2, u_c, cv::FILLED, 0);
+
+      char score_str[256];
+      sprintf(score_str, "%.2f", score);
+      std::string label_text = classes_names[box.idx] + " " + string(score_str);
+      int base_line = 0;
+      cv::Point text_origin = cv::Point(pt1.x - 2, pt1.y - 3);
+      cv::Size text_size = cv::getTextSize(label_text, font, font_scale, font_thickness, &base_line);
+      cv::rectangle(img, cv::Point(text_origin.x, text_origin.y + 5),
+                    cv::Point(text_origin.x + text_size.width, text_origin.y - text_size.height - 5),
+                    u_c, -1, 0);
+      cv::putText(img, label_text, text_origin, font, font_scale, cv::Scalar(0, 0, 0), font_thickness);
+    }
+  }
+  cv::Mat combined;
+  cv::addWeighted(img, 0.8, mask, 0.6, 0.6, combined);
+  // maybe combine a mask img back later
+  return combined;
+}
 #endif
 
-
-}  // namespace vis
-}  // namespace thor
+} // namespace vis
+} // namespace thor

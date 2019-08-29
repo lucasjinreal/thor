@@ -60,6 +60,10 @@ cv::Scalar gen_unique_color_cv(int idx, bool is_track=false, double hue_step = 0
 cv::Mat createAlpha(cv::Mat &src);
 int addAlpha(cv::Mat &src, cv::Mat &dst, cv::Mat &alpha);
 
+// draw detections
+cv::Mat VisualizeDetection(cv::Mat &img, vector<vector<float>> detections, vector<string> classes_names, bool enable_mask = true, float confidence_threshold = 0.02, bool normalized=false);
+cv::Mat VisualizeDetection(cv::Mat &img, vector<thor::Box> detections, vector<string> classes_names, bool enable_mask = true, float confidence_threshold = 0.02, bool normalized=false);
+
 // adding render HumanPose on image
 void renderHumanPose(std::vector<HumanPose>& poses, cv::Mat& image);
 void renderHumanPoseSimple(std::vector<HumanPose>& poses, cv::Mat& image);

@@ -38,6 +38,61 @@ b). If you need full capacity which thor does, including `vis`, `geometry`, `dat
 
 - **2050.01.01**: to be continue..
 
+- **2019.08.29**: A new header-only args parser lib has been added into thor. Original implementation from [here](https://github.com/Taywee/args). We did some changes than original, roughly usage can be used like this:
+
+    ````c++
+    #include "thor/args.h"
+    using namespace thor;
+    int main() {
+      args::ArgumentParser parser("YoloV3 TensorRT", "args parse from thor");
+      args::HelpFlag help(parser, "HELP", "Show this help menu.", {"help"});
+      args::ValueFlag<std::string> data(parser, "data", "data.", {'d'}, "");
+      args::ValueFlag<std::string> proto_txt(parser, "proto_txt", "proto_txt.", {'p'}, "");
+      args::ValueFlag<std::string> model(parser, "model", "caffe model.", {'m'}, "");
+      args::ValueFlag<std::string> engine(parser, "engine", "trt engine file.", {"engine"}, "");
+        
+        try
+        {
+            parser.ParseCLI(argc, argv);
+        }
+        catch (const args::Completion& e)
+        {
+            std::cout << e.what();
+            return 0;
+        }
+        catch (const args::Help&)
+        {
+            std::cout << parser;
+            return 0;
+        }
+        catch (const args::ParseError& e)
+        {
+            std::cerr << e.what() << std::endl;
+            std::cerr << parser;
+            return 1;
+        }
+    }
+    ````
+
+    You will see:
+
+    ```
+    ./examples/trt_yolov3 {OPTIONS}
+    
+        YoloV3 TensorRT
+    
+      OPTIONS:
+    
+          --help                            Show this help menu.
+          -d[data]                          data.
+          -p[proto_txt]                     proto_txt.
+          -m[model]                         caffe model.
+          --engine=[engine]                 trt engine file.
+        args parse from thor
+    ```
+
+    This is useful when you do not want gflags and glog lib, since those 2 has been integrated into thor!!
+
 - **2019.08.07**: O(∩_∩)O~~!!! A lightweighted logging lib has been integrated into thor!!!!! Now, you can using `LOG(INFO)` without glog:
 
     ```c++
