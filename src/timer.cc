@@ -4,8 +4,6 @@
 
 
 namespace thor{
-
-
 Timer::Timer(const float& hz)
     : hz_(hz),
       start_time_(),
@@ -18,7 +16,6 @@ Timer::Timer(): hz_(20),
                 target_duration_(1.0/20),
                 busy_(false){
 }
-
 
 void Timer::on() {
   start_time_ = std::chrono::system_clock::now();
@@ -50,6 +47,5 @@ double Timer::lap() {
 // this should return as seconds
   return duration.count();
 }
-
 
 }

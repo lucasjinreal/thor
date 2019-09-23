@@ -32,27 +32,18 @@ class Timer {
  public:
   Timer(const float& hz);
   Timer();
-
   ~Timer(){};
-
   void on();
-
   double off();
-
 //  /// Start measuring time
 //  void press();
-
   double lap();
 
  private:
-
   float hz_;
-
   std::chrono::system_clock::time_point start_time_;
   std::chrono::system_clock::time_point last_update_time_;
-
   std::chrono::duration<double> target_duration_;
-
   bool busy_;
 };
 
