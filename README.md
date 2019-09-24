@@ -6,6 +6,8 @@
 
 **thor** is a C++ helper library which provide huge utilities, algorithms, and visualization functions for deep learning. We recommend install thor from github source since we update thor new APIs a lot. But *thor* will always compatible with older versions, it safe and reliable integrate into your projects and providing useful utilities.
 
+Glad to know this repo was recommended by 爱可可老师! The link is https://weibo.com/1402400261/I8p1gnIkK .
+
 **note**: thor does not support Windows for now, we will upgrade to support Windows as quickly as possiable.
 
 
@@ -37,6 +39,8 @@ b). If you need full capacity which thor does, including `vis`, `geometry`, `dat
 ## Updates
 
 - **2050.01.01**: to be continue..
+
+- **2019.09.24**: I just notice thor has been recommended by 爱可可老师 through weibo, here is link: https://weibo.com/1402400261/I8p1gnIkK , check it out!!! If you like this project, pls give a star!!
 
 - **2019.08.29**: A new header-only args parser lib has been added into thor. Original implementation from [here](https://github.com/Taywee/args). We did some changes than original, roughly usage can be used like this:
 
