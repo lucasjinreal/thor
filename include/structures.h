@@ -5,7 +5,9 @@
 #include <algorithm>
 
 //#ifdef USE_OPENCV
+#ifndef USE_OPENCV4
 #include "opencv/cv.hpp"
+#endif
 #include "opencv2/opencv.hpp"
 //#endif
 
