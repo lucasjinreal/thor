@@ -14,6 +14,7 @@ Glad to know this repo was recommended by 爱可可老师! The link is https://w
 
 ## Install
 
+**If you are a newbie of C++ or Ubuntu, recommend you using simple mode**.
 a). If you only need thor independent modules without OpenCV or Eigen or Protobuf or Curl, you can simply run:
 
 ```
