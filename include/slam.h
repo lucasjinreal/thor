@@ -25,7 +25,9 @@
 #ifdef USE_OPENCV
 #include "opencv2/opencv.hpp"
 #include <opencv2/core/types.hpp>
+#ifndef USE_OPENCV4
 #include <opencv/cv.hpp>
+#endif
 #include "iostream"
 #include "vector"
 
