@@ -69,6 +69,11 @@ cv::Mat VisualizeDetection(cv::Mat &img, vector<thor::Box> detections,
                            bool enable_mask = true,
                            float confidence_threshold = 0.02,
                            bool normalized = false);
+cv::Mat VisualizeDetectionStyleDetectron2(cv::Mat &img, vector<thor::Box> detections,
+                           vector<string> classes_names,
+                           bool enable_mask = true,
+                           float confidence_threshold = 0.02,
+                           bool normalized = false);
 
 // adding render HumanPose on image
 void renderHumanPose(std::vector<HumanPose> &poses, cv::Mat &image);

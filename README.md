@@ -41,6 +41,45 @@ b). If you need full capacity which thor does, including `vis`, `geometry`, `dat
 
 - **2050.01.01**: to be continue..
 
+- **2019.11.16**: We demonstrate how to using `thor::vis` to draw detections in your algorithm:
+
+    ![](https://s2.ax1x.com/2019/11/15/Mdig8e.png)
+
+    ```c++
+    #include "thor/dl.h"
+    #include "thor/os.h"
+    #include "thor/structures.h"
+    #include "thor/vis.h"
+    
+    using namespace std;
+    using namespace cv;
+    using namespace thor::vis;
+    using namespace thor::dl;
+    
+    int main() {
+        vector<thor::Box> all_detections;
+      for (int i = 0; i < num_det; i++) {
+        // Show results over confidence threshold
+        if (scores[i] >= 0.33f) {
+          float x1 = boxes[i * 4 + 0] * scale_x;
+          float y1 = boxes[i * 4 + 1] * scale_y;
+          float x2 = boxes[i * 4 + 2] * scale_x;
+          float y2 = boxes[i * 4 + 3] * scale_y;
+          thor::Box one_box{x1, y1, x2, y2, thor::BoxFormat::XYXY};
+          one_box.score = scores[i];
+          one_box.idx = classes[i] + 1;
+          all_detections.emplace_back(one_box);
+        }
+      }
+    
+    // draw
+    auto res_image = thor::vis::VisualizeDetectionStyleDetectron2(
+              image, all_detections, COCO_CLASSES);
+    }
+    ```
+
+    Above is a simple example using `thor::vis::VisualizeDetectionStyleDetectron2` draw bounding boxes using detectron2 style.  From our experiences, these steps time cost is about **0.0001**s, so it's doesn't matter if you generate your box format to `thor::Box` format first and then call our drawing method.
+
 - **2019.09.24**: I just notice thor has been recommended by 爱可可老师 through weibo, here is link: https://weibo.com/1402400261/I8p1gnIkK , check it out!!! If you like this project, pls give a star!!
 
 - **2019.08.29**: A new header-only args parser lib has been added into thor. Original implementation from [here](https://github.com/Taywee/args). We did some changes than original, roughly usage can be used like this:
