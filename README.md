@@ -41,6 +41,19 @@ b). If you need full capacity which thor does, including `vis`, `geometry`, `dat
 
 - **2050.01.01**: to be continue..
 
+- **2019.12.26**: We add a `functions` in thor to enable some tiny functions:
+
+    ```c++
+    #include "thor/functions.h"
+    
+    double values[] = {-0.9381,  0.8967};
+    double probs[2];
+    thor::functions::softmax_1d(values, probs, 2);
+    LOG(INFO) << probs[0] << " " << probs[1];
+    ```
+
+    Also we update a bug in `HWC2CHW`, now it works well now.
+
 - **2019.11.16**: We demonstrate how to using `thor::vis` to draw detections in your algorithm:
 
     ![](https://s2.ax1x.com/2019/11/15/Mdig8e.png)
