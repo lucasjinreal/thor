@@ -21,7 +21,7 @@
 #include "thor/vis.h"
 #include "thor/macro.h"
 #include "thor/timer.h"
-
+#include "thor/functions.h"
 
 using namespace std;
 using namespace thor;
@@ -174,5 +174,14 @@ int main(int argc, char **argv) {
 
   cv::imshow("demo", img);
   cv::waitKey(0);
+
+
+  LOG(INFO) << "test for functions...";
+  LOG(INFO)  << "        softmax:";
+  float* values = {-0.9381,  0.8967};
+  float* probs;
+  thor::functions::softmax_1d(values, probs, 2);
+  LOG(INFO) << probs[0] << " " << probs[1];
+
   return 0;
 }

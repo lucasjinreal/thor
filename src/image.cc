@@ -37,11 +37,12 @@ float *Normalize(cv::Mat img) {
 
 float *HWC2CHW(cv::Mat img, const float kMeans[3], const float kStds[3]) {
   // convert HWC input normal image into CHW format
+  // we have to make sure img data type is float
   float *data;
   data = (float*) calloc(img.rows * img.cols * 3, sizeof(float));
   for (int c = 0; c < 3; ++c) {
     for (int i = 0; i < img.rows; ++i) {
-      cv::Vec3b *p1 = img.ptr<cv::Vec3b>(i);
+      auto *p1 = img.ptr<cv::Vec3f>(i);
       for (int j = 0; j < img.cols; ++j) {
         data[c * img.cols * img.rows + i * img.cols + j] = (p1[j][c] - kMeans[c])/kStds[c];
       }
@@ -50,6 +51,10 @@ float *HWC2CHW(cv::Mat img, const float kMeans[3], const float kStds[3]) {
   return data;
 }
 
+
+float *HWC2CHW_fast(cv::Mat img, const float kMeans[3], const float kStds[3]) {
+  // haven't implemented yet
+}
 
 }
 }

@@ -41,6 +41,7 @@ float* Normalize(cv::Mat img);
  * @return
  */
 float* HWC2CHW(cv::Mat img, const float kMeans[3], const float kStds[3]);
+float* HWC2CHW_fast(cv::Mat img, const float kMeans[3], const float kStds[3]);
 
 
 /**

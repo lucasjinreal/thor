@@ -79,7 +79,7 @@ message(STATUS "CV_EX: " ${USE_CV_EX})
 message(STATUS "CURL: " ${USE_CURL})
 
 
-add_library(thor SHARED ${thor_SRCS} ${thor_HEADERS} include/image.h src/image.cc)
+add_library(thor SHARED ${thor_SRCS} ${thor_HEADERS} include/image.h src/image.cc include/functions.h src/functions.cc)
 add_library(thor_static STATIC ${thor_SRCS} ${thor_HEADERS})
 
 if (USE_OPENCV)
