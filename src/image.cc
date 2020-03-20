@@ -56,5 +56,42 @@ float *HWC2CHW_fast(cv::Mat img, const float kMeans[3], const float kStds[3]) {
   // haven't implemented yet
 }
 
+cv::Mat read2mat(float *prob, cv::Mat out) {
+  for (int i = 0; i < 128; ++i) {
+    cv::Vec<float, 7> *p1 = out.ptr<cv::Vec<float, 7>>(i);
+    for (int j = 0; j < 128; ++j) {
+      for (int c = 0; c < 7; ++c) {
+        p1[j][c] = prob[c * 128 * 128 + i * 128 + j];
+      }
+    }
+  }
+  return out;
+}
+
+cv::Mat map2threeunchar(cv::Mat real_out, cv::Mat real_out_) {
+  for (int i = 0; i < 512; ++i) {
+    cv::Vec<float, 7> *p1 = real_out.ptr<cv::Vec<float, 7>>(i);
+    cv::Vec3b *p2 = real_out_.ptr<cv::Vec3b>(i);
+    for (int j = 0; j < 512; ++j) {
+      int index = 0;
+      float swap;
+      for (int c = 0; c < 7; ++c) {
+        if (p1[j][0] < p1[j][c]) {
+          swap = p1[j][0];
+          p1[j][0] = p1[j][c];
+          p1[j][c] = swap;
+          index = c;
+        }
+      }
+      p2[j][0] = map_[index][2];
+      p2[j][1] = map_[index][1];
+      p2[j][2] = map_[index][0];
+
+    }
+  }
+  return real_out_;
+}
+
+
 }
 }
