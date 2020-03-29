@@ -5,9 +5,9 @@
 #include <algorithm>
 
 //#ifdef USE_OPENCV
-#ifndef USE_OPENCV4
-#include "opencv/cv.hpp"
-#endif
+// #ifndef USE_OPENCV4
+// #include "opencv/cv.hpp"
+// #endif
 #include "opencv2/opencv.hpp"
 //#endif
 
@@ -120,6 +120,27 @@ struct Box {
     }
   }
 };
+
+
+struct BoxVanilla{
+    float x1;
+    float y1;
+    float x2;
+    float y2;
+};
+struct Landmarks{
+    float x;
+    float y;
+};
+struct Detection{
+    //x1 y1 x2 y2
+    BoxVanilla bbox;
+    //float objectness;
+    Landmarks marks[5];
+    int classId;
+    float prob;
+};
+
 
 
 //#ifdef USE_OPENCV
