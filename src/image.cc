@@ -42,7 +42,7 @@ float *HWC2CHW(cv::Mat img, const float kMeans[3], const float kStds[3]) {
   data = (float*) calloc(img.rows * img.cols * 3, sizeof(float));
   for (int c = 0; c < 3; ++c) {
     for (int i = 0; i < img.rows; ++i) {
-      auto *p1 = img.ptr<cv::Vec3f>(i);
+      cv::Vec3b *p1 = img.ptr<cv::Vec3b>(i);
       for (int j = 0; j < img.cols; ++j) {
         data[c * img.cols * img.rows + i * img.cols + j] = (p1[j][c] - kMeans[c])/kStds[c];
       }

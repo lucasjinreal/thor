@@ -63,7 +63,7 @@ struct Box {
 
   BoxFormat format;
 
-  Box(int a, int b, int c, int d, int format) {
+  Box(int a, int b, int c, int d, int format=BoxFormat::XYXY) {
 	switch (format) {
 	  case XYXY:
 	    xmin = a;
@@ -119,6 +119,28 @@ struct Box {
         break;
     }
   }
+};
+
+struct BoxSimple{
+  float x1;
+  float y1;
+  float x2;
+  float y2;
+};
+
+struct landmarks{
+  float x;
+  float y;
+};
+
+// detection supports multiple usages
+struct Detection{
+  //x1 y1 x2 y2
+  BoxSimple bbox;
+  //float objectness;
+  landmarks marks[5];
+  int classId;
+  float prob;
 };
 
 
