@@ -92,6 +92,32 @@ cv::Mat map2threeunchar(cv::Mat real_out, cv::Mat real_out_) {
   return real_out_;
 }
 
+cv::Mat resizeAlongShortest(cv::Mat img, int target_w, int target_h) {
+    cv::Mat intermediateImg, outputImg;
+    int delta_w, delta_h, top, left, bottom, right;
+    int new_w = img.size().width;
+    int new_h = img.size().height;
+
+    if (((float)target_w / img.size().width) < ((float)target_h / img.size().height)) {
+        new_w = target_w;
+        new_h = (img.size().height * target_w) / img.size().width;
+    } else {
+        new_h = target_h;
+        new_w = (img.size().width * target_h) / img.size().height;
+    }
+    cv::resize(img, intermediateImg, cv::Size(new_w, new_h));
+    float w_scale = target_w / (float)new_w;
+    float h_scale = target_h / (float)new_h;
+    delta_w = target_w - new_w;
+    delta_h = target_h - new_h;
+    top = floor(delta_h / 2);
+    bottom = delta_h - floor(delta_h / 2);
+    left = floor(delta_w / 2);
+    right = delta_w - floor(delta_w / 2);
+    cv::copyMakeBorder(intermediateImg, outputImg, top, bottom, left, right,
+                       cv::BORDER_CONSTANT, (0, 0, 0));
+    return outputImg;
+}
 
 }
 }

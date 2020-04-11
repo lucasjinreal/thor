@@ -13,7 +13,7 @@
  */
 
 #include <opencv2/core/mat.hpp>
-
+#include "opencv2/imgproc.hpp"
 
 
 namespace thor{
@@ -52,6 +52,9 @@ cv::Mat map2threeunchar(cv::Mat real_out, cv::Mat real_out_);
  * such as resizeAlongShortest etc.
  *
  */
+cv::Mat resizeAlongShortest(cv::Mat img, int target_w, int target_h);
+
+
 
 }
 }
