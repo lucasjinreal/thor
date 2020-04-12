@@ -490,10 +490,9 @@ namespace thor {
 
                     if (fancy) {
                         cv::rectangle(mask, pt1, pt2, u_c, line_thickness, cv::LINE_AA, 0);
-
+                                                cv::rectangle(img, pt1, pt2, u_c, line_thickness, cv::LINE_AA, 0);
                     } else {
                         cv::rectangle(img, pt1, pt2, u_c, line_thickness, cv::LINE_AA, 0);
-
                     }
 
                     char score_str[256];
@@ -506,6 +505,9 @@ namespace thor {
                         cv::rectangle(mask, cv::Point(text_origin.x - 2, text_origin.y - text_size.height - 2),
                                       cv::Point(text_origin.x + text_size.width + 2, text_origin.y + 2),
                                       u_c, cv::FILLED, 0);
+                        cv::rectangle(img, cv::Point(text_origin.x - 2, text_origin.y - text_size.height - 2),
+                                      cv::Point(text_origin.x + text_size.width + 2, text_origin.y + 2),
+                                      cv::Scalar(0, 0, 0), -1, 0);
                     } else {
                         cv::rectangle(img, cv::Point(text_origin.x - 2, text_origin.y - text_size.height - 2),
                                       cv::Point(text_origin.x + text_size.width + 2, text_origin.y + 2),
