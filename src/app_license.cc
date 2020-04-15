@@ -39,7 +39,8 @@
 
 thor::security::LicenseChecker::LicenseChecker()
 {
-  _url = "http://loliloli.pro/api/v1/unique_license";
+  // _url = "http://loliloli.pro/api/v1/unique_license";
+  _url = "http://home.manaai.cn/api/v1/unique_license";
 }
 
 thor::security::CheckResult thor::security::LicenseChecker::checkLicense(string license)
