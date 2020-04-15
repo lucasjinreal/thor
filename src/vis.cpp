@@ -1,187 +1,25 @@
-//
-// Created by jintian on 18-1-12.
-//
-
-#include "include/vis.h"
-
-thor::vis::RGBA thor::vis::gen_unique_color(int idx, bool is_track,
-                                            double hue_step, float alpha) {
-    // if idx is track id, the color should be
-    if (is_track) {
-        // we may have 1000+ track ids
-        int track_size = 1. / hue_step;
-        idx = idx % track_size;
-    }
-    float h = idx * hue_step - (int) (idx * hue_step);
-    double v = 1.0 - (int(idx * hue_step) % 4) / 5.;
-
-    thor::vis::RGBA rgba;
-    thor::vis::hsv2rgb(rgba, h, 1, v);
-
-    rgba.r = 255 * rgba.r;
-    rgba.g = 255 * rgba.g;
-    rgba.b = 255 * rgba.b;
-    rgba.a = alpha;
-    return rgba;
-}
-
-void thor::vis::hsv2rgb(thor::vis::RGBA &rgba, float h, float s, float v) {
-    if (s == 0) {
-        rgba.r = v;
-        rgba.g = v;
-        rgba.b = v;
-        return;
-    }
-    int i = h * 6.0;
-    float f = (h * 6.0) - i;
-    float p = v * (1.0 - s);
-    float q = v * (1.0 - s * f);
-    float t = v * (1.0 - s * (1.0 - f));
-    i = i % 6;
-    switch (i) {
-        case 0:
-            rgba.r = v;
-            rgba.g = t;
-            rgba.b = p;
-            break;
-        case 1:
-            rgba.r = q;
-            rgba.g = v;
-            rgba.b = p;
-            break;
-        case 2:
-            rgba.r = p;
-            rgba.g = v;
-            rgba.b = t;
-            break;
-        case 3:
-            rgba.r = p;
-            rgba.g = q;
-            rgba.b = v;
-            break;
-        case 4:
-            rgba.r = t;
-            rgba.g = p;
-            rgba.b = v;
-            break;
-        case 5:
-            rgba.r = v;
-            rgba.g = p;
-            rgba.b = q;
-            break;
-        default:
-            break;
-    }
-}
-
-void thor::vis::hsv2rgb(float &r, float &g, float &b, float h, float s,
-                        float v) {
-    double hh, p, q, t, ff;
-    long i;
-    if (s <= 0.0) { // < is bogus, just shuts up warnings
-        r = float(v);
-        g = float(v);
-        b = float(v);
-    }
-    hh = h;
-    if (hh >= 360.0)
-        hh = 0.0;
-    hh /= 60.0;
-    i = (long) hh;
-    ff = hh - i;
-    p = v * (1.0 - s);
-    q = v * (1.0 - (s * ff));
-    t = v * (1.0 - (s * (1.0 - ff)));
-    switch (i) {
-        case 0:
-            r = v;
-            g = t;
-            b = p;
-            break;
-        case 1:
-            r = q;
-            g = v;
-            b = p;
-            break;
-        case 2:
-            r = p;
-            g = v;
-            b = t;
-            break;
-
-        case 3:
-            r = p;
-            g = q;
-            b = v;
-            break;
-        case 4:
-            r = t;
-            g = p;
-            b = v;
-            break;
-        case 5:
-        default:
-            r = v;
-            g = p;
-            b = q;
-            break;
-    }
-}
-
-#ifdef USE_OPENCV
-
-cv::Scalar thor::vis::gen_unique_color_cv(int idx, bool is_track,
-                                          double hue_step, float alpha) {
-    RGBA cr = gen_unique_color(idx, is_track, hue_step, alpha);
-    cv::Scalar c(cr.r, cr.g, cr.b);
-    return c;
-}
-
-cv::Mat thor::vis::createAlpha(cv::Mat &src) {
-    cv::Mat alpha = cv::Mat::zeros(src.rows, src.cols, CV_8UC1);
-    cv::Mat gray = cv::Mat::zeros(src.rows, src.cols, CV_8UC1);
-    cv::cvtColor(src, gray, cv::COLOR_RGB2GRAY);
-    for (int i = 0; i < src.rows; i++) {
-        for (int j = 0; j < src.cols; j++) {
-            alpha.at<uchar>(i, j) = 255 - gray.at<uchar>(i, j);
-        }
-    }
-    return alpha;
-}
-
-int thor::vis::addAlpha(cv::Mat &src, cv::Mat &dst, cv::Mat &alpha) {
-    if (src.channels() == 4) {
-        return -1;
-    } else if (src.channels() == 1) {
-        cv::cvtColor(src, src, cv::COLOR_GRAY2RGB);
-    }
-
-    dst = cv::Mat(src.rows, src.cols, CV_8UC4);
-
-    std::vector<cv::Mat> srcChannels;
-    std::vector<cv::Mat> dstChannels;
-    cv::split(src, srcChannels);
-
-    dstChannels.push_back(srcChannels[0]);
-    dstChannels.push_back(srcChannels[1]);
-    dstChannels.push_back(srcChannels[2]);
-    dstChannels.push_back(alpha);
-    cv::merge(dstChannels, dst);
-    return 0;
-}
-
-#endif
-
-namespace thor {
-    namespace vis {
-
-#ifdef USE_OPENCV
-
-/**
- * Human pose order should in OpenPose order
+/*
+ * Copyright (c) 2020 Fagang Jin.
  *
- * @param poses
- * @param image
+ * This file is part of thor
+ * (see manaai.cn).
+ *
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
  */
         void renderHumanPose(std::vector<HumanPose> &poses, cv::Mat &image) {
             // drawing HumanPoses on image

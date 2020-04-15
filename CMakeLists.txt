@@ -7,7 +7,7 @@ option(USE_OPENCV "enable OpenCV in vis modules" ON)
 option(USE_EIGEN "enable build with eigen" OFF)
 option(USE_CV_EX "enable additional cv draw ability" OFF)
 option(USE_PROTOBUF "enable protobuf related components." OFF)
-option(USE_CURL "enable curl related components." OFF)
+option(USE_CURL "enable curl related components." ON)
 option(DEBUG "Enable debug mode, for develop" ON)
 
 
@@ -58,6 +58,8 @@ if (USE_CURL)
     else ()
         add_definitions(-DUSE_CURL)
     endif ()
+else()
+    message(FATAL_ERROR "thor need build with curl, did u installed libcurl4-dev?")
 endif ()
 
 
