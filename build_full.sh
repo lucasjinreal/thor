@@ -1,12 +1,12 @@
 #!/bin/bash
 # this script build cao library automatically
 
-sudo apt install -y libopencv-dev
+#sudo apt install -y libopencv-dev
 sudo apt install -y libfreetype6-dev
 sudo apt install -y libcurl4-openssl-dev
 sudo apt install -y libeigen3-dev
-sudo apt-get install -y libprotobuf-dev
-sudo apt install -y protobuf-compiler
+#sudo apt-get install -y libprotobuf-dev
+#sudo apt install -y protobuf-compiler
 
 
 sudo chmod -R 777 *
