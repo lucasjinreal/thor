@@ -59,6 +59,7 @@ if (USE_CURL)
         add_definitions(-DUSE_CURL)
     endif ()
 else()
+    message(DEBUG $USE_CURL)
     message(FATAL_ERROR "thor need build with curl, did u installed libcurl4-dev?")
 endif ()
 

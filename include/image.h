@@ -21,7 +21,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-
+#pragma once
 #include <opencv2/core/mat.hpp>
 #include "opencv2/imgproc.hpp"
 
@@ -70,4 +70,3 @@ cv::Mat resizeAlongShortest(cv::Mat img, int target_w, int target_h);
 }
 
 
-#endif //THOR_INCLUDE_IMAGE_H_

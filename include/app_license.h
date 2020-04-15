@@ -21,6 +21,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
+#pragma once
 
 #include <iostream>
 #include "curl/curl.h"
@@ -56,4 +57,3 @@ namespace thor{
     }
 }
 
-#endif //THOR_APP_LICENSE_H
