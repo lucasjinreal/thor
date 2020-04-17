@@ -3,7 +3,6 @@
 <p align="center">
 <img src="https://s2.ax1x.com/2019/06/06/VdV0i9.png" />
 </p>
-
 **thor** is a C++ helper library which provide huge utilities, algorithms, and visualization functions for deep learning. We recommend install thor from github source since we update thor new APIs a lot. But *thor* will always compatible with older versions, it safe and reliable integrate into your projects and providing useful utilities.
 
 Glad to know this repo was recommended by 爱可可老师! The link is https://weibo.com/1402400261/I8p1gnIkK .
@@ -47,7 +46,48 @@ b). If you need full capacity which thor does, including `vis`, `geometry`, `dat
     sudo apt install libcurl4-openssl-dev
     ```
 
-    We add protobuf as default built.
+    We add protobuf as default built for the introduce of protos which we will using for default data structures:
+
+    ```c++
+    Detection2D det1;
+    Box box;
+    box.set_x1(23);
+    box.set_y1(89);
+    box.set_x2(99);
+    box.set_y2(156);
+    det1.set_allocated_box(&box);
+    det1.set_cls_id(9);
+    det1.set_prob(0.9);
+    
+    InstanceSegmentation seg1;
+    seg1.set_allocated_detection(&det1);
+    // float32
+    seg1.add_mask(2.3);
+    seg1.add_mask(2.3);
+    seg1.add_mask(2.3);
+    seg1.add_mask(2.3);
+    
+    LOG(INFO) << seg1.DebugString();
+    ```
+
+    this will easy transport to other languages:
+
+    ```
+    detection {
+      box {
+        x1: 23
+        y1: 89
+        x2: 99
+        y2: 156
+      }
+      cls_id: 9
+      prob: 0.9
+    }
+    mask: 2.3
+    mask: 2.3
+    mask: 2.3
+    mask: 2.3
+    ```
 
 - **2019.12.26**: We add a `functions` in thor to enable some tiny functions:
 

@@ -74,16 +74,17 @@ int main() {
 
   PRINT_GREEN("4. test protos.");
   Detection2D det1;
-  det1.set_x(9);
-  det1.set_y(9);
-  det1.set_w(9);
-  det1.set_h(9);
+  Box box;
+  box.set_x1(23);
+  box.set_y1(89);
+  box.set_x2(99);
+  box.set_y2(156);
+  det1.set_allocated_box(&box);
   det1.set_cls_id(9);
   det1.set_prob(0.9);
 
   InstanceSegmentation seg1;
   seg1.set_allocated_detection(&det1);
-
   // float32
   seg1.add_mask(2.3);
   seg1.add_mask(2.3);
