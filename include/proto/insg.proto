@@ -1,0 +1,13 @@
+syntax = "proto2";
+
+package thor.dl;
+
+import "det.proto";
+
+message InstanceSegmentation{
+    optional Detection2D detection = 1;
+    repeated float mask = 2;
+}
+
+
+

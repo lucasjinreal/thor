@@ -11,10 +11,6 @@ option(USE_CURL "enable curl related components." ON)
 option(DEBUG "Enable debug mode, for develop" ON)
 
 
-file(GLOB_RECURSE thor_SRCS "src/*.cpp" "src/*.cc")
-file(GLOB_RECURSE thor_HEADERS "include/*.h" "include/*.hpp")
-
-
 if (WIN32)
     message(STATUS "Windows platform thor can only build with simple mode, will close EIGEN and CV_EX")
 endif ()
@@ -33,7 +29,7 @@ endif ()
 
 
 if (USE_OPENCV)
-    find_package(OpenCV REQUIRED)
+    find_package(OpenCV 4.0 REQUIRED)
     if (OpenCV_FOUND)
         message(STATUS "Build with OpenCV")
         message(STATUS "    OpenCV version: " ${OpenCV_VERSION})
@@ -65,12 +61,36 @@ endif ()
 
 
 if (USE_PROTOBUF)
-    find_package(Protobuf REQUIRED)
+    find_package(Protobuf 3.10 REQUIRED)
+
     if (NOT PROTOBUF_FOUND)
         set(USE_PROTOBUF OFF)
         message(STATUS "protobuf not found, turned it off.")
     else ()
+        set(protobuf_MODULE_COMPATIBLE ON CACHE BOOL "")
         add_definitions(-DUSE_PROTOBUF)
+
+        set(PROTOBUF_IMPORT_DIRS ${CMAKE_SOURCE_DIR}/include/proto)
+        SET(PROTO_META_BASE_DIR ${CMAKE_SOURCE_DIR}/include/proto)
+        LIST(APPEND PROTO_FLAGS -I${CMAKE_SOURCE_DIR}/include/proto)
+
+        file(GLOB ProtoFiles "include/proto/*.proto")
+        message(DEBUG ${ProtoFiles})
+        FOREACH(FIL ${ProtoFiles})
+            GET_FILENAME_COMPONENT(FIL_WE ${FIL} NAME_WE)
+
+            string(REGEX REPLACE ".+/(.+)\\..*" "\\1" FILE_NAME ${FIL})
+            string(REGEX REPLACE "(.+)\\${FILE_NAME}.*" "\\1" FILE_PATH ${FIL})
+
+            string(REGEX MATCH "(/proto/.*|/proto/.*)" OUT_PATH ${FILE_PATH})
+
+            list(APPEND PROTO_SRCS "${CMAKE_CURRENT_BINARY_DIR}${OUT_PATH}${FIL_WE}.pb.cc")
+            list(APPEND PROTO_HDRS "${CMAKE_CURRENT_BINARY_DIR}${OUT_PATH}${FIL_WE}.pb.h")
+
+            EXECUTE_PROCESS(
+                    COMMAND ${PROTOBUF_PROTOC_EXECUTABLE} ${PROTO_FLAGS} --cpp_out=${PROTO_META_BASE_DIR} ${FIL}
+            )
+        ENDFOREACH()
     endif ()
 endif ()
 
@@ -82,8 +102,12 @@ message(STATUS "CV_EX: " ${USE_CV_EX})
 message(STATUS "CURL: " ${USE_CURL})
 
 
-add_library(thor SHARED ${thor_SRCS} ${thor_HEADERS} include/image.h src/image.cc include/functions.h src/functions.cc)
+file(GLOB_RECURSE thor_SRCS "src/*.cpp" "src/*.cc" "include/proto/*.cc")
+file(GLOB_RECURSE thor_HEADERS "include/*.h" "include/*.hpp" "include/proto/*.h")
+
+add_library(thor SHARED ${thor_SRCS} ${thor_HEADERS})
 add_library(thor_static STATIC ${thor_SRCS} ${thor_HEADERS})
+
 
 if (USE_OPENCV)
     target_link_libraries(thor ${OpenCV_LIBS})
@@ -96,6 +120,9 @@ endif ()
 if (USE_CURL)
     target_link_libraries(thor ${CURL_LIBRARIES})
 endif ()
+
+
+
 
 set_target_properties(
         thor

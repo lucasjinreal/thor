@@ -1,0 +1,13 @@
+syntax = "proto2";
+
+package thor.dl;
+
+
+message Detection2D{
+    optional int32 x = 1;
+    optional int32 y = 2;
+    optional int32 w = 3;
+    optional int32 h = 4;
+    optional int32 cls_id = 5;
+    optional double prob = 6;
+}

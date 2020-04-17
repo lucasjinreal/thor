@@ -30,10 +30,14 @@
 #include "thor/timer.h"
 #include "thor/functions.h"
 
+#include "thor/det.pb.h"
+#include "thor/insg.pb.h"
 
 
 using namespace std;
 using namespace thor::log;
+using namespace thor::dl;
+
 
 int main() {
   PRINT_RED("hello, we are testing some basic function in thor...");
@@ -67,4 +71,25 @@ int main() {
   double probs[2];
   thor::functions::softmax_1d(values, probs, 2);
   LOG(INFO) << probs[0] << " " << probs[1];
+
+  PRINT_GREEN("4. test protos.");
+  Detection2D det1;
+  det1.set_x(9);
+  det1.set_y(9);
+  det1.set_w(9);
+  det1.set_h(9);
+  det1.set_cls_id(9);
+  det1.set_prob(0.9);
+
+  InstanceSegmentation seg1;
+  seg1.set_allocated_detection(&det1);
+
+  // float32
+  seg1.add_mask(2.3);
+  seg1.add_mask(2.3);
+  seg1.add_mask(2.3);
+  seg1.add_mask(2.3);
+
+  LOG(INFO) << seg1.DebugString();
+
 }
