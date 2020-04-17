@@ -9,5 +9,8 @@ message InstanceSegmentation{
     repeated float mask = 2;
 }
 
-
+message FramePossession {
+    repeated InstanceSegmentation instances = 1;
+    repeated Detection2D detections = 2;
+}
 

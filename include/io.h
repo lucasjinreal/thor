@@ -25,25 +25,41 @@
 #include <fstream>
 #include <string>
 #include <vector>
+#include "google/protobuf/io/zero_copy_stream.h"
+#include "google/protobuf/text_format.h"
 
 using namespace std;
 
 namespace thor {
-namespace io {
-inline bool ReadTxtLines(string txt_file, vector<string> &res) {
-  std::ifstream in(txt_file.c_str());
-  // Check if object is valid
-  if (!in) {
-    return false;
-  }
-  std::string str;
-  while (std::getline(in, str)) {
-    if (str.size() > 0) res.push_back(str);
-  }
-  in.close();
-  return true;
-}
-}  // namespace io
+    namespace io {
+        inline bool ReadTxtLines(string txt_file, vector<string> &res) {
+            std::ifstream in(txt_file.c_str());
+            // Check if object is valid
+            if (!in) {
+                return false;
+            }
+            std::string str;
+            while (std::getline(in, str)) {
+                if (str.size() > 0) res.push_back(str);
+            }
+            in.close();
+            return true;
+        }
+
+
+// save ProtoBuff messages to binary
+        template<typename T>
+        void savePbToBinary(T t, string f_str) {
+            std::ofstream fw;
+            // not implemented
+//            fw.open(f_str, std::ios::out | std::ios::binary);
+//            google::protobuf::io::CodedOutputStream *output = new google::protobuf::io::CodedOutputStream(&fw);
+//            google::protobuf::TextFormat::Print(t, output);
+//            delete output;
+//            fw.close();
+        }
+
+    }  // namespace io
 }  // namespace thor
 
 #endif
