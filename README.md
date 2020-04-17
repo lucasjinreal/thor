@@ -31,8 +31,6 @@ b). If you need full capacity which thor does, including `vis`, `geometry`, `dat
 
 *this will build a full version of thor with link to opencv, protobuf, curl, freetype. so if you call any related function, you gonna need link to that lib first in your cmake file.*
 
-
-
 **note**: Our `logging` module using same micro define as glog, so it will conflicts if you importing them both. If your project doesn't need glog and you are using thor, you can simply deprecate glog and using thor only.
 
 
@@ -40,6 +38,16 @@ b). If you need full capacity which thor does, including `vis`, `geometry`, `dat
 ## Updates
 
 - **2050.01.01**: to be continue..
+
+- **2020.04.15**: **thor now build with curl and protobuf** by default. If you got any question about protobuf link problem, pls fire an issue, I will help u fix that, normally thor should built successfully without any errors, as long as you install default libs:
+
+    ```
+    sudo apt install libprotobuf-dev
+    sudo apt install protobuf-compiler
+    sudo apt install libcurl4-openssl-dev
+    ```
+
+    We add protobuf as default built.
 
 - **2019.12.26**: We add a `functions` in thor to enable some tiny functions:
 

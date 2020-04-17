@@ -62,7 +62,7 @@ endif ()
 
 if (USE_PROTOBUF)
     find_package(Protobuf REQUIRED)
-
+    message(STATUS " protoc: " ${PROTOBUF_PROTOC_EXECUTE_VERSION} " libprotobuf: " ${Protobuf_VERSION})
     if (NOT PROTOBUF_FOUND)
         set(USE_PROTOBUF OFF)
         message(STATUS "protobuf not found, turned it off.")
