@@ -10,8 +10,9 @@ include_directories(/usr/include/freetype2/)
 file(GLOB_RECURSE SOURCES src/*.cpp lib/*.cpp )
 file(GLOB_RECURSE HEADERS include/*.h lib/*.h)
 
-find_package(Protobuf 3.10 REQUIRED)
+find_package(Protobuf REQUIRED)
 
 
 add_executable(thor_simple thor_simple.cpp)
 target_link_libraries(thor_simple thor ${Protobuf_LIBRARY})
+

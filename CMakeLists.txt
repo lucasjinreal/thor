@@ -61,7 +61,7 @@ endif ()
 
 
 if (USE_PROTOBUF)
-    find_package(Protobuf 3.10 REQUIRED)
+    find_package(Protobuf REQUIRED)
 
     if (NOT PROTOBUF_FOUND)
         set(USE_PROTOBUF OFF)
