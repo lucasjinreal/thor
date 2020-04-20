@@ -520,13 +520,14 @@ namespace thor
 
                 // mask size must save with box_h * box_w
                 cv::Mat resized_mask(instance_segmentation.mask_h(), instance_segmentation.mask_w(), CV_32F, (float*) instance_segmentation.mask().begin());
-                cv::resize(resized_mask, resized_mask, cv::Point(box_w, box_h));
 
                 int l = instance_segmentation.detection().box().x1() < 0 ? 0: instance_segmentation.detection().box().x1();
                 int t = instance_segmentation.detection().box().y1() < 0 ? 0: instance_segmentation.detection().box().y1();
                 box_w = l+box_w > img.cols ? img.cols: box_w;
                 box_h = t+box_h > img.rows ? img.rows: box_h;
                 cv::Rect box(l, t, box_w, box_h);
+                cv::resize(resized_mask, resized_mask, cv::Point(box_w, box_h));
+                
                 cv::Mat mask = (resized_mask > 0.1);
                 Scalar color = thor::vis::gen_unique_color_cv(category_id);
                 Mat coloredRoi = (0.3 * color + 0.7 * img(box));
