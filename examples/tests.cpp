@@ -79,6 +79,7 @@ int main(int argc, char** argv) {
     LOG(INFO) << all_instances.size();
 
     cv::Mat img = cv::imread(img_file);
+    LOG(INFO) << "img data type: " << img.type();
     auto res = thor::vis::VisualizeInstanceSegmentations(img, all_instances, thor::dl::COCO_CLASSES);
     cv::imshow("aa", img);
     cv::imshow("res", res);
