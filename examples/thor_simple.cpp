@@ -40,57 +40,70 @@ using namespace thor::dl;
 
 
 int main() {
-  PRINT_RED("hello, we are testing some basic function in thor...");
+    PRINT_RED("hello, we are testing some basic function in thor...");
 
-  PRINT_GREEN("1. test a timer.");
-  thor::Timer timer(20);
-  timer.on();
-  LOG(INFO) << " count start..";
-  for (int i = 0; i < 2; ++i) {
-    sleep(1);
-  }
-  LOG(INFO) << " cost time: " << timer.lap();
-  for (int i = 0; i < 2; ++i) {
-    sleep(1);
-  }
-  LOG(INFO) << "another time: " << timer.lap();
+    PRINT_GREEN("1. test a timer.");
+    thor::Timer timer(20);
+    timer.on();
+    LOG(INFO) << " count start..";
+    for (int i = 0; i < 2; ++i) {
+        sleep(1);
+    }
+    LOG(INFO) << " cost time: " << timer.lap();
+    for (int i = 0; i < 2; ++i) {
+        sleep(1);
+    }
+    LOG(INFO) << "another time: " << timer.lap();
 
-  PRINT_GREEN("2. test datum.");
-  if (thor::os::suffix("hhhaaa.mp4") == "mp4") {
-    LOG(INFO) << "this is an video file.";
-  }
+    PRINT_GREEN("2. test datum.");
+    if (thor::os::suffix("hhhaaa.mp4") == "mp4") {
+        LOG(INFO) << "this is an video file.";
+    }
 
-  LOG(INFO) << "creating some folder recursively.";
-  thor::os::makedirs("data/pointcloud", 07777);
+    LOG(INFO) << "creating some folder recursively.";
+    thor::os::makedirs("data/pointcloud", 07777);
 
 
-  PRINT_GREEN("3. test softmax.");
-  LOG(INFO) << "test for functions...";
-  LOG(INFO)  << "        softmax:";
-  double values[] = {-0.9381,  0.8967};
-  double probs[2];
-  thor::functions::softmax_1d(values, probs, 2);
-  LOG(INFO) << probs[0] << " " << probs[1];
+    PRINT_GREEN("3. test softmax.");
+    LOG(INFO) << "test for functions...";
+    LOG(INFO) << "        softmax:";
+    double values[] = {-0.9381, 0.8967};
+    double probs[2];
+    thor::functions::softmax_1d(values, probs, 2);
+    LOG(INFO) << probs[0] << " " << probs[1];
 
-  PRINT_GREEN("4. test protos.");
-  Detection2D det1;
-  Box box;
-  box.set_x1(23);
-  box.set_y1(89);
-  box.set_x2(99);
-  box.set_y2(156);
-  det1.set_allocated_box(&box);
-  det1.set_cls_id(9);
-  det1.set_prob(0.9);
+    PRINT_GREEN("4. test protos.");
 
-  InstanceSegmentation seg1;
-  seg1.set_allocated_detection(&det1);
-  // float32
-  seg1.add_mask(2.3);
-  seg1.add_mask(2.3);
-  seg1.add_mask(2.3);
-  seg1.add_mask(2.3);
+    FramePossession frame_possession;
+    for (int i = 0; i < 100; ++i) {
+        float score_i = 0.9;
+        LOG(INFO) << i << " " << score_i;
+        int cls_i = 5;
+        LOG(INFO) << i << " " << cls_i;
 
-  LOG(INFO) << seg1.DebugString();
+        LOG(INFO) << "at: " << i;
+        if (score_i > 0.2) {
+//            InstanceSegmentation *one_ins = frame_possession.add_instances();
+            Detection2D one_det;
+            Box one_box;
+            one_box.set_x1(123);
+            one_box.set_y1(88);
+            one_box.set_x2(278);
+            one_box.set_y2(190);
+            one_det.mutable_box()->CopyFrom(one_box);
+            one_det.set_prob((double) score_i);
+            one_det.set_cls_id(cls_i);
+//            one_ins->set_allocated_detection(&one_det);
+//            one_ins->add_mask(0.5);
+//            one_ins->add_mask(0.6);
+
+            LOG(INFO) << "cc";
+            // add mask to one_ins
+//            LOG(INFO) << one_ins->DebugString();
+//            LOG(INFO) << frame_possession.DebugString();
+        }
+    }
+
+    LOG(INFO) << frame_possession.DebugString();
 
 }

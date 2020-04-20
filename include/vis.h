@@ -46,6 +46,9 @@
 #include "cmath"
 #include "structures.h"
 
+#include "thor/det.pb.h"
+#include "thor/insg.pb.h"
+
 //#ifdef USE_OPENCV
 #include "opencv2/core.hpp"
 #include "opencv2/imgproc.hpp"
@@ -106,14 +109,36 @@ namespace thor {
 
 // More modern API which same as alfred
         cv::Mat VisualizeDetections(cv::Mat &img, vector<thor::Detection> detections,
-                                                  const vector<string> classes_names,
-                                                  const vector<cv::Scalar> *colors = NULL,
-                                                  const float line_thickness = 1,
-                                                  const float font_scale = 0.38,
-                                                  const bool fancy = false,
-                                                  const float confidence_threshold = 0.02,
-                                                  const bool enable_mask = false,
-                                                  const bool normalized = false);
+                                    const vector<string> classes_names,
+                                    const vector<cv::Scalar> *colors = NULL,
+                                    const float line_thickness = 1,
+                                    const float font_scale = 0.38,
+                                    const bool fancy = false,
+                                    const float confidence_threshold = 0.02,
+                                    const bool enable_mask = false,
+                                    const bool normalized = false);
+
+
+        ///////////////////// Visualize protobuf messages ///////////////////////
+        cv::Mat VisualizeDetections(cv::Mat &img, vector<thor::dl::Detection2D> detections,
+                                    const vector<string> classes_names,
+                                    const vector<cv::Scalar> *colors = NULL,
+                                    const float line_thickness = 1,
+                                    const float font_scale = 0.38,
+                                    const bool fancy = false,
+                                    const float confidence_threshold = 0.02,
+                                    const bool enable_mask = false,
+                                    const bool normalized = false);
+
+        cv::Mat VisualizeInstanceSegmentations(cv::Mat &img, vector<thor::dl::InstanceSegmentation> instances,
+                                    const vector<string> classes_names,
+                                    const vector<cv::Scalar> *colors = NULL,
+                                    const float line_thickness = 1,
+                                    const float font_scale = 0.38,
+                                    const bool fancy = false,
+                                    const float confidence_threshold = 0.02,
+                                    const bool enable_mask = false,
+                                    const bool normalized = false);
 
 // adding render HumanPose on image
         void renderHumanPose(std::vector<HumanPose> &poses, cv::Mat &image);

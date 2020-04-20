@@ -441,6 +441,104 @@ namespace thor
             return combined;
         }
 
+        cv::Mat VisualizeDetections(cv::Mat &img, vector<thor::dl::Detection2D> detections,
+                const vector<string> classes_names, const vector<cv::Scalar> *colors,
+                const float line_thickness, const float font_scale, const bool fancy,
+                const float confidence_threshold, const bool enable_mask, const bool normalized) {
+            // for visualize
+            const int font = cv::FONT_HERSHEY_TRIPLEX;
+            const int font_thickness = 2;
+            cv::Mat mask = cv::Mat::zeros(img.size(), CV_8UC3);
+            for (int i = 0; i < detections.size(); ++i)
+            {
+                thor::dl::Detection2D det = detections[i];
+                const thor::dl::Box &box = det.box();
+                const auto score = (float) det.prob();
+                if (score >= confidence_threshold)
+                {
+                    cv::Point pt1, pt2;
+                    if (normalized)
+                    {
+                        pt1.x = (img.cols * box.x1());
+                        pt1.y = (img.rows * box.y1());
+                        pt2.x = (img.cols * box.x2());
+                        pt2.y = (img.rows * box.y2());
+                    }
+                    else
+                    {
+                        pt1.x = box.x1();
+                        pt1.y = box.y1();
+                        pt2.x = box.x2();
+                        pt2.y = box.y2();
+                    }
+
+                    cv::Scalar u_c = thor::vis::gen_unique_color_cv(det.cls_id());
+                    cv::rectangle(img, pt1, pt2, u_c, 2, 8, 0);
+                    cv::rectangle(mask, pt1, pt2, u_c, cv::FILLED, 0);
+
+                    char score_str[256];
+                    sprintf(score_str, "%.2f", score);
+                    std::string label_text = classes_names[det.cls_id()] + " " + string(score_str);
+                    int base_line = 0;
+                    cv::Point text_origin = cv::Point(pt1.x - 2, pt1.y - 3);
+                    cv::Size text_size = cv::getTextSize(label_text, font, font_scale, font_thickness, &base_line);
+                    cv::rectangle(img, cv::Point(text_origin.x, text_origin.y + 5),
+                                  cv::Point(text_origin.x + text_size.width, text_origin.y - text_size.height - 5),
+                                  u_c, -1, 0);
+                    cv::putText(img, label_text, text_origin, font, font_scale, cv::Scalar(0, 0, 0), font_thickness);
+                }
+            }
+            cv::Mat combined;
+            cv::addWeighted(img, 0.8, mask, 0.6, 0.6, combined);
+            // maybe combine a mask img back later
+            return combined;
+        }
+
+        cv::Mat VisualizeInstanceSegmentations(cv::Mat &img,
+                vector<thor::dl::InstanceSegmentation> instances, const vector<string> classes_names,
+                const vector<cv::Scalar> *colors, const float line_thickness,
+                const float font_scale, const bool fancy, const float confidence_threshold,
+                const bool enable_mask, const bool normalized) {
+
+            cv::Mat mask = cv::Mat::zeros(img.size(), CV_8UC3);
+            cv::Mat mask_binary = cv::Mat::zeros(img.size(), CV_8UC1);
+            for (const auto &instance_segmentation : instances) {
+                int category_id = instance_segmentation.detection().cls_id();
+                std::string cat = classes_names[category_id];
+                float confidence = instance_segmentation.detection().prob();
+                char label[20];
+                sprintf(label, "%s:%.2f", cat.c_str(), confidence);
+                cv::rectangle(img,
+                              cv::Point(instance_segmentation.detection().box().x1(), instance_segmentation.detection().box().y1()),
+                              cv::Point(instance_segmentation.detection().box().x2(), instance_segmentation.detection().box().y2()),
+                              cv::Scalar(255, 0, 0));
+                cv::putText(img, label,
+                            cv::Point2i(instance_segmentation.detection().box().x1(), instance_segmentation.detection().box().y1()),
+                            cv::FONT_HERSHEY_PLAIN, 1.5, cv::Scalar(0, 255, 0));
+                int box_w = instance_segmentation.detection().box().x2() - instance_segmentation.detection().box().x1();
+                int box_h = instance_segmentation.detection().box().y2() - instance_segmentation.detection().box().y1();
+
+                // mask size must save with box_h * box_w
+                cv::Mat resized_mask(instance_segmentation.mask_h(), instance_segmentation.mask_w(), CV_32F, (float*) instance_segmentation.mask().begin());
+                cv::resize(resized_mask, resized_mask, cv::Point(box_w, box_h));
+
+                cv::Rect box(instance_segmentation.detection().box().x1(), instance_segmentation.detection().box().y1(),
+                             box_w, box_h);
+                cv::Mat mask = (resized_mask > 0.1);
+                Scalar color = thor::vis::gen_unique_color_cv(category_id);
+                Mat coloredRoi = (0.3 * color + 0.7 * img(box));
+                coloredRoi.convertTo(coloredRoi, CV_8UC3);
+
+                vector<Mat> contours;
+                Mat hierarchy;
+                mask.convertTo(mask, CV_8U);
+                findContours(mask, contours, hierarchy, RETR_CCOMP, CHAIN_APPROX_SIMPLE);
+                drawContours(coloredRoi, contours, -1, color, 5, LINE_8, hierarchy, 100);
+                coloredRoi.copyTo(img(box), mask);
+            }
+            return img;
+        }
+
         cv::Mat VisualizeDetectionStyleDetectron2(cv::Mat &img, vector<thor::Box> detections, vector<string> classes_names, bool enable_mask, float confidence_threshold, bool normalized){
             // for detectron2 style drawing bounding boxes
             const int font = cv::FONT_HERSHEY_SIMPLEX;
