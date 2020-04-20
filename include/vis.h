@@ -46,8 +46,8 @@
 #include "cmath"
 #include "structures.h"
 
-#include "include/proto/det.pb.h"
-#include "include/proto/insg.pb.h"
+#include "proto/det.pb.h"
+#include "proto/insg.pb.h"
 
 //#ifdef USE_OPENCV
 #include "opencv2/core.hpp"

@@ -24,7 +24,7 @@
 ##
 mkdir build
 cd build
-cmake ..
+cmake -DUSE_PROTOBUF=ON ..
 make -j2
 sudo make install
 

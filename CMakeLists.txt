@@ -75,7 +75,7 @@ if (USE_PROTOBUF)
         LIST(APPEND PROTO_FLAGS -I${CMAKE_SOURCE_DIR}/include/proto)
 
         file(GLOB ProtoFiles "include/proto/*.proto")
-        message(DEBUG ${ProtoFiles})
+        message(STATUS ${ProtoFiles})
         FOREACH(FIL ${ProtoFiles})
             GET_FILENAME_COMPONENT(FIL_WE ${FIL} NAME_WE)
 
@@ -84,9 +84,9 @@ if (USE_PROTOBUF)
 
             string(REGEX MATCH "(/proto/.*|/proto/.*)" OUT_PATH ${FILE_PATH})
 
-            list(APPEND PROTO_SRCS "${CMAKE_CURRENT_BINARY_DIR}${OUT_PATH}${FIL_WE}.pb.cc")
-            list(APPEND PROTO_HDRS "${CMAKE_CURRENT_BINARY_DIR}${OUT_PATH}${FIL_WE}.pb.h")
-
+            list(APPEND PROTO_SRCS "${CMAKE_SOURCE_DIR}/include/proto/${FIL_WE}.pb.cc")
+            list(APPEND PROTO_HDRS "${CMAKE_SOURCE_DIR}/include/proto/${FIL_WE}.pb.h")
+            message(STATUS ${PROTO_HDRS})
             EXECUTE_PROCESS(
                     COMMAND ${PROTOBUF_PROTOC_EXECUTABLE} ${PROTO_FLAGS} --cpp_out=${PROTO_META_BASE_DIR} ${FIL}
             )
@@ -142,5 +142,8 @@ install(TARGETS thor thor_static
         ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
         LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
         PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/thor)
+
+message(STATUS "Proto headers: " ${PROTO_HDRS})
+install(FILES ${PROTO_HDRS} DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/thor/proto)
 install(FILES include/thor.pc
         DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/pkgconfig)

@@ -46,53 +46,7 @@ using namespace thor::vis::color;
 const int kMaskSize = 28;
 
 
-cv::Mat VisualizeInstanceSegmentations(cv::Mat &img,
-                                       vector<thor::dl::InstanceSegmentation> instances,
-                                       const vector<string> classes_names) {
 
-    cv::Mat mask = cv::Mat::zeros(img.size(), CV_8UC3);
-    cv::Mat mask_binary = cv::Mat::zeros(img.size(), CV_8UC1);
-    for (const auto &instance_segmentation : instances) {
-        int category_id = instance_segmentation.detection().cls_id();
-        std::string cat = classes_names[category_id];
-        float confidence = instance_segmentation.detection().prob();
-        char label[20];
-        sprintf(label, "%s:%.2f", cat.c_str(), confidence);
-        LOG(INFO) << label;
-        cv::rectangle(img,
-                      cv::Point(instance_segmentation.detection().box().x1(), instance_segmentation.detection().box().y1()),
-                      cv::Point(instance_segmentation.detection().box().x2(), instance_segmentation.detection().box().y2()),
-                      cv::Scalar(255, 0, 0));
-        cv::putText(img, label,
-                    cv::Point2i(instance_segmentation.detection().box().x1(), instance_segmentation.detection().box().y1()),
-                    cv::FONT_HERSHEY_PLAIN, 1.5, cv::Scalar(0, 255, 0));
-        int color_idx = (category_id % kMRNumColors) * 3;
-        int box_w = instance_segmentation.detection().box().x2() - instance_segmentation.detection().box().x1();
-        int box_h = instance_segmentation.detection().box().y2() - instance_segmentation.detection().box().y1();
-
-        LOG(INFO) << "mask " << instance_segmentation.mask_size() << " " << box_h*box_w;
-
-        // mask size must save with box_h * box_w
-        cv::Mat resized_mask(instance_segmentation.mask_h(), instance_segmentation.mask_w(), CV_32F, (float*) instance_segmentation.mask().begin());
-        cv::resize(resized_mask, resized_mask, cv::Point(box_w, box_h));
-
-        cv::Rect box(instance_segmentation.detection().box().x1(), instance_segmentation.detection().box().y1(),
-                box_w, box_h);
-        cv::Mat mask = (resized_mask > 0.1);
-        Scalar color = thor::vis::gen_unique_color_cv(category_id);
-        Mat coloredRoi = (0.3 * color + 0.7 * img(box));
-        coloredRoi.convertTo(coloredRoi, CV_8UC3);
-
-        vector<Mat> contours;
-        Mat hierarchy;
-        mask.convertTo(mask, CV_8U);
-        findContours(mask, contours, hierarchy, RETR_CCOMP, CHAIN_APPROX_SIMPLE);
-        drawContours(coloredRoi, contours, -1, color, 5, LINE_8, hierarchy, 100);
-        coloredRoi.copyTo(img(box), mask);
-    }
-
-    return img;
-}
 
 
 int main(int argc, char** argv) {
@@ -125,7 +79,7 @@ int main(int argc, char** argv) {
     LOG(INFO) << all_instances.size();
 
     cv::Mat img = cv::imread(img_file);
-    auto res = VisualizeInstanceSegmentations(img, all_instances, thor::dl::COCO_CLASSES);
+    auto res = thor::vis::VisualizeInstanceSegmentations(img, all_instances, thor::dl::COCO_CLASSES);
     cv::imshow("aa", img);
     cv::imshow("res", res);
     cv::waitKey(0);
