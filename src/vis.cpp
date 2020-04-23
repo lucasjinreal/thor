@@ -392,7 +392,7 @@ namespace thor
         cv::Mat VisualizeDetection(cv::Mat &img, vector<thor::Box> detections, vector<string> classes_names, bool enable_mask, float confidence_threshold, bool normalized)
         {
             // for visualize
-            const int font = cv::FONT_HERSHEY_TRIPLEX;
+            const int font = cv::FONT_HERSHEY_SIMPLEX;
             const float font_scale = 0.6;
             const int font_thickness = 2;
             cv::Mat mask = cv::Mat::zeros(img.size(), CV_8UC3);
@@ -426,6 +426,54 @@ namespace thor
                     char score_str[256];
                     sprintf(score_str, "%.2f", score);
                     std::string label_text = classes_names[box.idx] + " " + string(score_str);
+                    int base_line = 0;
+                    cv::Point text_origin = cv::Point(pt1.x - 2, pt1.y - 3);
+                    cv::Size text_size = cv::getTextSize(label_text, font, font_scale, font_thickness, &base_line);
+                    cv::rectangle(img, cv::Point(text_origin.x, text_origin.y + 5),
+                                  cv::Point(text_origin.x + text_size.width, text_origin.y - text_size.height - 5),
+                                  u_c, -1, 0);
+                    cv::putText(img, label_text, text_origin, font, font_scale, cv::Scalar(255, 255, 255), font_thickness);
+                }
+            }
+            cv::Mat combined;
+            cv::addWeighted(img, 0.8, mask, 0.6, 0.6, combined);
+            // maybe combine a mask img back later
+            return combined;
+        }
+
+        cv::Mat VisualizeDetections(cv::Mat &img, vector<thor::Detection> detections, const vector<string> classes_names, const vector<cv::Scalar> *colors, const float line_thickness, const float font_scale, const bool fancy, const float confidence_threshold, const bool enable_mask, const bool normalized) {
+            const int font = cv::FONT_HERSHEY_TRIPLEX;
+            const int font_thickness = 2;
+            cv::Mat mask = cv::Mat::zeros(img.size(), CV_8UC3);
+            for (int i = 0; i < detections.size(); ++i)
+            {
+                thor::Detection det = detections[i];
+                const auto score = (float) det.prob;
+                if (score >= confidence_threshold)
+                {
+                    cv::Point pt1, pt2;
+                    if (normalized)
+                    {
+                        pt1.x = (img.cols * det.bbox.x1);
+                        pt1.y = (img.rows * det.bbox.y1);
+                        pt2.x = (img.cols * det.bbox.x2);
+                        pt2.y = (img.rows * det.bbox.y2);
+                    }
+                    else
+                    {
+                        pt1.x = det.bbox.x1;
+                        pt1.y = det.bbox.y1;
+                        pt2.x = det.bbox.x2;
+                        pt2.y = det.bbox.y2;
+                    }
+
+                    cv::Scalar u_c = thor::vis::gen_unique_color_cv(det.classId);
+                    cv::rectangle(img, pt1, pt2, u_c, 2, 8, 0);
+                    cv::rectangle(mask, pt1, pt2, u_c, cv::FILLED, 0);
+
+                    char score_str[256];
+                    sprintf(score_str, "%.2f", score);
+                    std::string label_text = classes_names[det.classId] + " " + string(score_str);
                     int base_line = 0;
                     cv::Point text_origin = cv::Point(pt1.x - 2, pt1.y - 3);
                     cv::Size text_size = cv::getTextSize(label_text, font, font_scale, font_thickness, &base_line);
@@ -527,7 +575,6 @@ namespace thor
                 box_h = t+box_h > img.rows ? img.rows: box_h;
                 cv::Rect box(l, t, box_w, box_h);
                 cv::resize(resized_mask, resized_mask, cv::Point(box_w, box_h));
-                
                 cv::Mat mask = (resized_mask > 0.1);
                 Scalar color = thor::vis::gen_unique_color_cv(category_id);
                 Mat coloredRoi = (0.3 * color + 0.7 * img(box));
