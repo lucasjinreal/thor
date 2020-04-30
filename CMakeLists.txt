@@ -105,7 +105,7 @@ message(STATUS "CURL: " ${USE_CURL})
 file(GLOB_RECURSE thor_SRCS "src/*.cpp" "src/*.cc" "include/proto/*.cc")
 file(GLOB_RECURSE thor_HEADERS "include/*.h" "include/*.hpp" "include/proto/*.h")
 
-add_library(thor SHARED ${thor_SRCS} ${thor_HEADERS})
+add_library(thor SHARED ${thor_SRCS} ${thor_HEADERS} include/utils.h)
 add_library(thor_static STATIC ${thor_SRCS} ${thor_HEADERS})
 
 
