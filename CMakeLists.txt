@@ -56,7 +56,7 @@ if (USE_CURL)
     endif ()
 else()
     message(DEBUG $USE_CURL)
-    message(FATAL_ERROR "thor need build with curl, did u installed libcurl4-dev?")
+    message(FATAL_ERROR "thor need build with curl, did u installed libcurl4-openssl-dev?")
 endif ()
 
 
