@@ -7,7 +7,12 @@
 
 Glad to know this repo was recommended by 爱可可老师! The link is https://weibo.com/1402400261/I8p1gnIkK .
 
-**note**: thor does not support Windows for now, we will upgrade to support Windows as quickly as possiable.
+>  note: Now thor built against protobuf by default (due to we use proto to visualize boxes in C++ for cross-platform), so in your project, you gonna need add following in your CMakeLists.txt:
+
+```cmake
+find_package(Protobuf REQUIRED)
+target_link_library(your_executable ${PROTOBUF_LIBRARY} thor)
+```
 
 
 
