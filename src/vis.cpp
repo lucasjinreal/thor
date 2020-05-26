@@ -494,8 +494,8 @@ namespace thor
                 const float line_thickness, const float font_scale, const bool fancy,
                 const float confidence_threshold, const bool enable_mask, const bool normalized) {
             // for visualize
-            const int font = cv::FONT_HERSHEY_TRIPLEX;
-            const int font_thickness = 2;
+            const int font = cv::FONT_HERSHEY_PLAIN;
+            const int font_thickness = 1;
             cv::Mat mask = cv::Mat::zeros(img.size(), CV_8UC3);
             for (int i = 0; i < detections.size(); ++i)
             {
@@ -520,20 +520,25 @@ namespace thor
                         pt2.y = box.y2();
                     }
 
-                    cv::Scalar u_c = thor::vis::gen_unique_color_cv(det.cls_id());
-                    cv::rectangle(img, pt1, pt2, u_c, 2, 8, 0);
+                    cv::Scalar u_c;
+                    if (colors != nullptr) {
+                        u_c = (*colors)[det.cls_id()];
+                    } else {
+                        u_c = thor::vis::gen_unique_color_cv(det.cls_id());
+                    }
+                    cv::rectangle(img, pt1, pt2, u_c, line_thickness, cv::LINE_4, 0);
                     cv::rectangle(mask, pt1, pt2, u_c, cv::FILLED, 0);
 
                     char score_str[256];
-                    sprintf(score_str, "%.2f", score);
-                    std::string label_text = classes_names[det.cls_id()] + " " + string(score_str);
-                    int base_line = 0;
-                    cv::Point text_origin = cv::Point(pt1.x - 2, pt1.y - 3);
+                    sprintf(score_str, "%.1f", score*100);
+                    std::string label_text = classes_names[det.cls_id()] + " " + string(score_str) + "%";
+                    int base_line = 4;
+                    cv::Point text_origin = cv::Point(pt1.x+2, pt1.y-base_line);
                     cv::Size text_size = cv::getTextSize(label_text, font, font_scale, font_thickness, &base_line);
-                    cv::rectangle(img, cv::Point(text_origin.x, text_origin.y + 5),
-                                  cv::Point(text_origin.x + text_size.width, text_origin.y - text_size.height - 5),
+                    cv::rectangle(mask, cv::Point(pt1.x, text_origin.y - text_size.height - base_line),
+                                  cv::Point(text_origin.x + text_size.width + 2, pt1.y),
                                   u_c, -1, 0);
-                    cv::putText(img, label_text, text_origin, font, font_scale, cv::Scalar(0, 0, 0), font_thickness);
+                    cv::putText(img, label_text, text_origin, font, font_scale, cv::Scalar(255, 255, 255), font_thickness);
                 }
             }
             cv::Mat combined;
