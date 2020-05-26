@@ -494,7 +494,8 @@ namespace thor
                 const float line_thickness, const float font_scale, const bool fancy,
                 const float confidence_threshold, const bool enable_mask, const bool normalized) {
             // for visualize
-            const int font = cv::FONT_HERSHEY_PLAIN;
+            // const int font = cv::FONT_HERSHEY_DUPLEX;
+            const int font = cv::FONT_HERSHEY_SIMPLEX;
             const int font_thickness = 1;
             cv::Mat mask = cv::Mat::zeros(img.size(), CV_8UC3);
             for (int i = 0; i < detections.size(); ++i)
@@ -529,6 +530,8 @@ namespace thor
                     cv::rectangle(img, pt1, pt2, u_c, line_thickness, cv::LINE_4, 0);
                     cv::rectangle(mask, pt1, pt2, u_c, cv::FILLED, 0);
 
+                    // CV_FONT_HERSHEY_DUPLEX
+
                     char score_str[256];
                     sprintf(score_str, "%.1f", score*100);
                     std::string label_text = classes_names[det.cls_id()] + " " + string(score_str) + "%";
@@ -538,7 +541,7 @@ namespace thor
                     cv::rectangle(mask, cv::Point(pt1.x, text_origin.y - text_size.height - base_line),
                                   cv::Point(text_origin.x + text_size.width + 2, pt1.y),
                                   u_c, -1, 0);
-                    cv::putText(img, label_text, text_origin, font, font_scale, cv::Scalar(255, 255, 255), font_thickness);
+                    cv::putText(img, label_text, text_origin, font, font_scale, cv::Scalar(255, 255, 255), font_thickness, cv::LINE_AA);
                 }
             }
             cv::Mat combined;
