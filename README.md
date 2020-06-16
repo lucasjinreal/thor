@@ -15,6 +15,13 @@ target_link_library(your_executable ${PROTOBUF_LIBRARY} thor)
 ```
 
 
+## Roadmap
+
+**thor** is still need progress and enlarge it's functionality. Current roadmap are:
+
+- [ ] support instance segmentation visualization;
+
+
 
 ## Install
 
