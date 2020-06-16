@@ -20,7 +20,7 @@ target_link_library(your_executable ${PROTOBUF_LIBRARY} thor)
 **thor** is still need progress and enlarge it's functionality. Current roadmap are:
 
 - [ ] support instance segmentation visualization;
-
+- [ ] upload thor to ubuntu package manager;
 
 
 ## Install
