@@ -80,10 +80,13 @@ int main(int argc, char** argv) {
 
     cv::Mat img = cv::imread(img_file);
     LOG(INFO) << "img data type: " << img.type();
-    auto res = thor::vis::VisualizeInstanceSegmentations(img, all_instances, thor::dl::COCO_CLASSES);
+    // auto res = thor::vis::VisualizeInstanceSegmentations(img, all_instances, thor::dl::COCO_CLASSES);
     cv::imshow("aa", img);
-    cv::imshow("res", res);
+    // cv::imshow("res", res);
     cv::waitKey(0);
+
+    cv::Scalar c = thor::vis::toCvColor(thor::vis::color::kAliceBlue);
+    LOG(INFO) << c;
 
     google::protobuf::ShutdownProtobufLibrary();
 }
