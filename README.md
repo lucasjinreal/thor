@@ -19,7 +19,7 @@ target_link_library(your_executable ${PROTOBUF_LIBRARY} thor)
 
 **thor** is still need progress and enlarge it's functionality. Current roadmap are:
 
-- [ ] support instance segmentation visualization;
+- [x] support instance segmentation visualization;
 - [ ] upload thor to ubuntu package manager;
 
 
@@ -49,6 +49,16 @@ b). If you need full capacity which thor does, including `vis`, `geometry`, `dat
 ## Updates
 
 - **2050.01.01**: to be continue..
+
+- **2020.08.17**: thor now supports visualize lane:
+
+    ```c++
+    auto resImg = thor::vis::VisualizeLanes(image, res, nullptr, 12, 1.0);
+    ```
+
+    ![](/home/fagangjin/.config/Typora/typora-user-images/image-20200817113732176.png)
+
+    
 
 - **2020.04.15**: **thor now build with curl and protobuf** by default. If you got any question about protobuf link problem, pls fire an issue, I will help u fix that, normally thor should built successfully without any errors, as long as you install default libs:
 

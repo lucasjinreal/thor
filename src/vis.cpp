@@ -658,11 +658,11 @@ cv::Mat VisualizeLanes(cv::Mat &img, const vector<vector<cv::Point>> &lanes,
       u_c = thor::vis::gen_unique_color_cv(i + 6);
     }
     // draw line
-    cv::polylines(mask, lanes[i], false, u_c, line_thickness);
+    cv::polylines(mask, lanes[i], false, u_c, line_thickness, cv::LINE_AA);
   }
 
   cv::Mat combined;
-  cv::addWeighted(img, 0.8, mask, alpha, 0.2, combined);
+  cv::addWeighted(img, 0.8, mask, alpha, 0.6, combined);
   // maybe combine a mask img back later
   return combined;
 }

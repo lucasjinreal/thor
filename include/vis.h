@@ -141,7 +141,7 @@ cv::Mat VisualizeInstanceSegmentations(
 /////////////////// Visualize Lane ///////////////////////
 cv::Mat VisualizeLanes(cv::Mat &img, const vector<vector<cv::Point>> &lanes,
                       const vector<cv::Scalar> *colors = NULL,
-                      const float line_thickness = 12, const float alpha = 0.96,
+                      const float line_thickness = 12, const float alpha = 1.0,
                       const bool guide_line = true);
 
 // adding render HumanPose on image
