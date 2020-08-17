@@ -71,7 +71,9 @@ struct RGBA {
 };
 
 // conversions
-cv::Scalar toCvColor(const unsigned char *c) { return cv::Scalar(c[0], c[1], c[2]); }
+cv::Scalar toCvColor(const unsigned char *c) {
+  return cv::Scalar(c[0], c[1], c[2]);
+}
 
 // adding default values for better calling
 thor::vis::RGBA gen_unique_color(int idx, bool is_track = false,
@@ -119,6 +121,8 @@ cv::Mat VisualizeDetections(
     const bool enable_mask = false, const bool normalized = false);
 
 ///////////////////// Visualize protobuf messages ///////////////////////
+
+#ifdef USE_PROTOBUF
 cv::Mat VisualizeDetections(
     cv::Mat &img, vector<thor::dl::Detection2D> detections,
     const vector<string> classes_names, const vector<cv::Scalar> *colors = NULL,
@@ -132,6 +136,13 @@ cv::Mat VisualizeInstanceSegmentations(
     const float line_thickness = 1, const float font_scale = 0.38,
     const bool fancy = false, const float confidence_threshold = 0.02,
     const bool enable_mask = false, const bool normalized = false);
+#endif
+
+/////////////////// Visualize Lane ///////////////////////
+cv::Mat VisualizeLanes(cv::Mat &img, const vector<vector<cv::Point>> &lanes,
+                      const vector<cv::Scalar> *colors = NULL,
+                      const float line_thickness = 12, const float alpha = 0.96,
+                      const bool guide_line = true);
 
 // adding render HumanPose on image
 void renderHumanPose(std::vector<HumanPose> &poses, cv::Mat &image);

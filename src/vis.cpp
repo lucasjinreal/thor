@@ -468,6 +468,7 @@ cv::Mat VisualizeDetections(cv::Mat &img, vector<thor::Detection> detections,
   return combined;
 }
 
+#ifdef USE_PROTOBUF
 cv::Mat VisualizeDetections(cv::Mat &img,
                             vector<thor::dl::Detection2D> detections,
                             const vector<string> classes_names,
@@ -588,6 +589,7 @@ cv::Mat VisualizeInstanceSegmentations(
   }
   return img;
 }
+#endif
 
 cv::Mat VisualizeDetectionStyleDetectron2(
     cv::Mat &img, vector<thor::Box> detections, vector<string> classes_names,
@@ -639,6 +641,31 @@ cv::Mat VisualizeDetectionStyleDetectron2(
   // maybe combine a mask img back later
   return combined;
 };
+
+/////////////////////////// Visualize Lanes ////////////////////
+cv::Mat VisualizeLanes(cv::Mat &img, const vector<vector<cv::Point>> &lanes,
+                       const vector<cv::Scalar> *colors,
+                       const float line_thickness, const float alpha,
+                       const bool guide_line) {
+  // do some alpha effect
+  cv::Mat mask = cv::Mat::zeros(img.size(), CV_8UC3);
+  for (int i = 0; i < lanes.size(); i++) {
+    // draw a lane
+    cv::Scalar u_c;
+    if (colors != nullptr) {
+      u_c = (*colors)[i];
+    } else {
+      u_c = thor::vis::gen_unique_color_cv(i + 6);
+    }
+    // draw line
+    cv::polylines(mask, lanes[i], false, u_c, line_thickness);
+  }
+
+  cv::Mat combined;
+  cv::addWeighted(img, 0.8, mask, alpha, 0.2, combined);
+  // maybe combine a mask img back later
+  return combined;
+}
 
 #endif
 

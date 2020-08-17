@@ -1,6 +1,7 @@
 cmake_minimum_required(VERSION 3.5)
 project(thor VERSION 1.3.0 LANGUAGES CXX)
 set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_FLAGS  "-fPIC")
 
 
 option(USE_OPENCV "enable OpenCV in vis modules" ON)
@@ -8,6 +9,7 @@ option(USE_EIGEN "enable build with eigen" OFF)
 option(USE_CV_EX "enable additional cv draw ability" OFF)
 option(USE_PROTOBUF "enable protobuf related components." ON)
 option(USE_CURL "enable curl related components." ON)
+option(BUILD_STATIC "enable to build static thor lib" OFF)
 option(DEBUG "Enable debug mode, for develop" ON)
 
 
@@ -100,13 +102,16 @@ message(STATUS "Eigen: " ${USE_EIGEN})
 message(STATUS "Protobuf: " ${USE_PROTOBUF})
 message(STATUS "CV_EX: " ${USE_CV_EX})
 message(STATUS "CURL: " ${USE_CURL})
+message(STATUS "BUILD_STATIC: " ${BUILD_STATIC})
 
 
 file(GLOB_RECURSE thor_SRCS "src/*.cpp" "src/*.cc" "include/proto/*.cc")
 file(GLOB_RECURSE thor_HEADERS "include/*.h" "include/*.hpp" "include/proto/*.h")
 
 add_library(thor SHARED ${thor_SRCS} ${thor_HEADERS} include/utils.h)
-add_library(thor_static STATIC ${thor_SRCS} ${thor_HEADERS})
+if (BUILD_STATIC)
+    add_library(thor_static STATIC ${thor_SRCS} ${thor_HEADERS})
+endif()
 
 
 if (USE_OPENCV)
@@ -114,7 +119,8 @@ if (USE_OPENCV)
 endif ()
 
 if (USE_PROTOBUF)
-    target_link_libraries(thor ${PROTOBUF_LIBRARIES})
+    # target_link_libraries(thor ${PROTOBUF_LIBRARIES})
+    target_link_libraries(thor /usr/lib/x86_64-linux-gnu/libprotobuf.so)
 endif ()
 
 if (USE_CURL)
@@ -128,20 +134,31 @@ set_target_properties(
         thor
         PROPERTIES
         PUBLIC_HEADER "${thor_HEADERS}")
+target_include_directories(thor PRIVATE .)
+
+if (BUILD_STATIC) 
 set_target_properties(
         thor_static
         PROPERTIES
         PUBLIC_HEADER "${thor_HEADERS}")
+        target_include_directories(thor_static PRIVATE .)
+endif()
 
 
 configure_file(thor.pc thor.pc @ONLY)
-target_include_directories(thor PRIVATE .)
-target_include_directories(thor_static PRIVATE .)
 
-install(TARGETS thor thor_static
+
+install(TARGETS thor
         ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
         LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
         PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/thor)
+
+if (BUILD_STATIC)
+install(TARGETS thor_static
+        ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+        LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+        PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/thor)
+endif()
 
 message(STATUS "Proto headers: " ${PROTO_HDRS})
 install(FILES ${PROTO_HDRS} DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/thor/proto)
