@@ -26,6 +26,7 @@ target_link_library(your_executable ${PROTOBUF_LIBRARY} thor)
 ## Install
 
 **If you are a newbie of C++ or Ubuntu, recommend you using simple mode**.
+
 a). If you only need thor independent modules without OpenCV or Eigen or Protobuf or Curl, you can simply run:
 
 ```
@@ -56,7 +57,7 @@ b). If you need full capacity which thor does, including `vis`, `geometry`, `dat
     auto resImg = thor::vis::VisualizeLanes(image, res, nullptr, 12, 1.0);
     ```
 
-    ![](/home/fagangjin/.config/Typora/typora-user-images/image-20200817113732176.png)
+    ![](https://i.loli.net/2020/08/21/byrAOkCFNoWItP4.png)
 
     
 
