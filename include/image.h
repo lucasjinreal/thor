@@ -1,19 +1,29 @@
-//
-// Created by fagangjin on 11/12/2019.
-//
-
-#ifndef THOR_INCLUDE_IMAGE_H_
-#define THOR_INCLUDE_IMAGE_H_
-
-
-/**
+/*
+ * Copyright (c) 2020 Fagang Jin.
  *
- * We are going to add image
- * related code
+ * This file is part of thor
+ * (see manaai.cn).
+ *
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
  */
-
+#pragma once
 #include <opencv2/core/mat.hpp>
-
+#include "opencv2/imgproc.hpp"
 
 
 namespace thor{
@@ -52,9 +62,11 @@ cv::Mat map2threeunchar(cv::Mat real_out, cv::Mat real_out_);
  * such as resizeAlongShortest etc.
  *
  */
+cv::Mat resizeAlongShortest(cv::Mat img, int target_w, int target_h);
+
+
 
 }
 }
 
 
-#endif //THOR_INCLUDE_IMAGE_H_

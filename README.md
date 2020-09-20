@@ -3,18 +3,30 @@
 <p align="center">
 <img src="https://s2.ax1x.com/2019/06/06/VdV0i9.png" />
 </p>
-
 **thor** is a C++ helper library which provide huge utilities, algorithms, and visualization functions for deep learning. We recommend install thor from github source since we update thor new APIs a lot. But *thor* will always compatible with older versions, it safe and reliable integrate into your projects and providing useful utilities.
 
 Glad to know this repo was recommended by 爱可可老师! The link is https://weibo.com/1402400261/I8p1gnIkK .
 
-**note**: thor does not support Windows for now, we will upgrade to support Windows as quickly as possiable.
+>  note: Now thor built against protobuf by default (due to we use proto to visualize boxes in C++ for cross-platform), so in your project, you gonna need add following in your CMakeLists.txt:
 
+```cmake
+find_package(Protobuf REQUIRED)
+target_link_library(your_executable ${PROTOBUF_LIBRARY} thor)
+```
+
+
+## Roadmap
+
+**thor** is still need progress and enlarge it's functionality. Current roadmap are:
+
+- [x] support instance segmentation visualization;
+- [ ] upload thor to ubuntu package manager;
 
 
 ## Install
 
 **If you are a newbie of C++ or Ubuntu, recommend you using simple mode**.
+
 a). If you only need thor independent modules without OpenCV or Eigen or Protobuf or Curl, you can simply run:
 
 ```
@@ -31,8 +43,6 @@ b). If you need full capacity which thor does, including `vis`, `geometry`, `dat
 
 *this will build a full version of thor with link to opencv, protobuf, curl, freetype. so if you call any related function, you gonna need link to that lib first in your cmake file.*
 
-
-
 **note**: Our `logging` module using same micro define as glog, so it will conflicts if you importing them both. If your project doesn't need glog and you are using thor, you can simply deprecate glog and using thor only.
 
 
@@ -40,6 +50,67 @@ b). If you need full capacity which thor does, including `vis`, `geometry`, `dat
 ## Updates
 
 - **2050.01.01**: to be continue..
+
+- **2020.08.17**: thor now supports visualize lane:
+
+    ```c++
+    auto resImg = thor::vis::VisualizeLanes(image, res, nullptr, 12, 1.0);
+    ```
+
+    ![](https://i.loli.net/2020/08/21/byrAOkCFNoWItP4.png)
+
+    
+
+- **2020.04.15**: **thor now build with curl and protobuf** by default. If you got any question about protobuf link problem, pls fire an issue, I will help u fix that, normally thor should built successfully without any errors, as long as you install default libs:
+
+    ```
+    sudo apt install libprotobuf-dev
+    sudo apt install protobuf-compiler
+    sudo apt install libcurl4-openssl-dev
+    ```
+
+    We add protobuf as default built for the introduce of protos which we will using for default data structures:
+
+    ```c++
+    Detection2D det1;
+    Box box;
+    box.set_x1(23);
+    box.set_y1(89);
+    box.set_x2(99);
+    box.set_y2(156);
+    det1.set_allocated_box(&box);
+    det1.set_cls_id(9);
+    det1.set_prob(0.9);
+    
+    InstanceSegmentation seg1;
+    seg1.set_allocated_detection(&det1);
+    // float32
+    seg1.add_mask(2.3);
+    seg1.add_mask(2.3);
+    seg1.add_mask(2.3);
+    seg1.add_mask(2.3);
+    
+    LOG(INFO) << seg1.DebugString();
+    ```
+
+    this will easy transport to other languages:
+
+    ```
+    detection {
+      box {
+        x1: 23
+        y1: 89
+        x2: 99
+        y2: 156
+      }
+      cls_id: 9
+      prob: 0.9
+    }
+    mask: 2.3
+    mask: 2.3
+    mask: 2.3
+    mask: 2.3
+    ```
 
 - **2019.12.26**: We add a `functions` in thor to enable some tiny functions:
 

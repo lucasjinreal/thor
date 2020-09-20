@@ -1,3 +1,26 @@
+/*
+ * Copyright (c) 2020 Fagang Jin.
+ *
+ * This file is part of thor
+ * (see manaai.cn).
+ *
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
 //
 // Created by jintian on 18-1-12.
 //
@@ -9,18 +32,20 @@
  *  Vision module in cao
  *  the module provide some utility methods to draw bboxes
  */
-#include <iostream>
-#include <string>
-#include <vector>
-
 #include <sys/stat.h>
+
 #include <cassert>
 #include <cmath>
 #include <fstream>
 #include <iostream>
 #include <map>
 #include <sstream>
+#include <string>
+#include <vector>
+
 #include "cmath"
+#include "proto/det.pb.h"
+#include "proto/insg.pb.h"
 #include "structures.h"
 
 //#ifdef USE_OPENCV
@@ -45,17 +70,26 @@ struct RGBA {
   }
 };
 
+// conversions
+cv::Scalar toCvColor(const unsigned char *c) {
+  return cv::Scalar(c[0], c[1], c[2]);
+}
+
 // adding default values for better calling
 thor::vis::RGBA gen_unique_color(int idx, bool is_track = false,
                                  double hue_step = 0.41, float alpha = 0.7);
+
 void hsv2rgb(float &r, float &g, float &b, float h, float s, float v);
+
 void hsv2rgb(thor::vis::RGBA &rgba, float h, float s, float v);
 
 //#ifdef USE_OPENCV
 // tracking color is slightly different, they are all close
 cv::Scalar gen_unique_color_cv(int idx, bool is_track = false,
                                double hue_step = 0.41, float alpha = 0.7);
+
 cv::Mat createAlpha(cv::Mat &src);
+
 int addAlpha(cv::Mat &src, cv::Mat &dst, cv::Mat &alpha);
 
 // draw detections
@@ -64,19 +98,55 @@ cv::Mat VisualizeDetection(cv::Mat &img, vector<vector<float>> detections,
                            bool enable_mask = true,
                            float confidence_threshold = 0.02,
                            bool normalized = false);
+
 cv::Mat VisualizeDetection(cv::Mat &img, vector<thor::Box> detections,
                            vector<string> classes_names,
                            bool enable_mask = true,
                            float confidence_threshold = 0.02,
                            bool normalized = false);
-cv::Mat VisualizeDetectionStyleDetectron2(cv::Mat &img, vector<thor::Box> detections,
-                           vector<string> classes_names,
-                           bool enable_mask = true,
-                           float confidence_threshold = 0.02,
-                           bool normalized = false);
+
+cv::Mat VisualizeDetectionStyleDetectron2(cv::Mat &img,
+                                          vector<thor::Box> detections,
+                                          vector<string> classes_names,
+                                          bool enable_mask = true,
+                                          float confidence_threshold = 0.02,
+                                          bool normalized = false);
+
+// More modern API which same as alfred
+cv::Mat VisualizeDetections(
+    cv::Mat &img, vector<thor::Detection> detections,
+    const vector<string> classes_names, const vector<cv::Scalar> *colors = NULL,
+    const float line_thickness = 1, const float font_scale = 0.38,
+    const bool fancy = false, const float confidence_threshold = 0.02,
+    const bool enable_mask = false, const bool normalized = false);
+
+///////////////////// Visualize protobuf messages ///////////////////////
+
+#ifdef USE_PROTOBUF
+cv::Mat VisualizeDetections(
+    cv::Mat &img, vector<thor::dl::Detection2D> detections,
+    const vector<string> classes_names, const vector<cv::Scalar> *colors = NULL,
+    const float line_thickness = 1.7, const float font_scale = 0.3,
+    const bool fancy = false, const float confidence_threshold = 0.02,
+    const bool enable_mask = false, const bool normalized = false);
+
+cv::Mat VisualizeInstanceSegmentations(
+    cv::Mat &img, vector<thor::dl::InstanceSegmentation> instances,
+    const vector<string> classes_names, const vector<cv::Scalar> *colors = NULL,
+    const float line_thickness = 1, const float font_scale = 0.38,
+    const bool fancy = false, const float confidence_threshold = 0.02,
+    const bool enable_mask = false, const bool normalized = false);
+#endif
+
+/////////////////// Visualize Lane ///////////////////////
+cv::Mat VisualizeLanes(cv::Mat &img, const vector<vector<cv::Point>> &lanes,
+                      const vector<cv::Scalar> *colors = NULL,
+                      const float line_thickness = 12, const float alpha = 1.0,
+                      const bool guide_line = true);
 
 // adding render HumanPose on image
 void renderHumanPose(std::vector<HumanPose> &poses, cv::Mat &image);
+
 void renderHumanPoseSimple(std::vector<HumanPose> &poses, cv::Mat &image);
 //#endif
 
@@ -998,7 +1068,6 @@ const int kColorPlanOldCaffe[] = {
     0,   0,   255, 0,   0,   0,   36,  36,  36,  72,  72,  72,  109, 109, 109,
     145, 145, 145, 182, 182, 182, 218, 218, 218, 255, 255, 255,
 };
-
 
 }  // namespace vis
 }  // namespace thor
