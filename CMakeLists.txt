@@ -121,6 +121,8 @@ endif ()
 if (USE_PROTOBUF)
     # target_link_libraries(thor ${PROTOBUF_LIBRARIES})
     target_link_libraries(thor /usr/lib/x86_64-linux-gnu/libprotobuf.so)
+    # uncomment this if you are on arm such as JetsonNano or TX2
+    # target_link_libraries(thor /usr/lib/aarch64-linux-gnu/libprotobuf.so)
 endif ()
 
 if (USE_CURL)
