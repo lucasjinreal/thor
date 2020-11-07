@@ -22,6 +22,13 @@
 ## specific language governing permissions and limitations
 ## under the License.
 ##
+
+sudo apt install -y libfreetype6-dev
+sudo apt install -y libcurl4-openssl-dev
+sudo apt install -y libeigen3-dev
+sudo apt-get install -y libprotobuf-dev
+sudo apt install -y protobuf-compiler
+
 mkdir build
 cd build
 cmake -DUSE_PROTOBUF=ON ..

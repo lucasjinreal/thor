@@ -23,6 +23,28 @@ target_link_library(your_executable ${PROTOBUF_LIBRARY} thor)
 - [ ] upload thor to ubuntu package manager;
 
 
+
+## Quick Install
+
+Simple version:
+
+```
+./build_simple.sh
+```
+
+You need install `libprotobuf-dev` and `protobuf-compiler` first on Ubuntu or linux system. If you got any problems about not found **libcurl** or **protobuf header files**, be sure installed libs inside `build_simple.sh`.
+
+If you want to build thor on **JetsonNano**, you need manually uncomment CMakeLists.txt link path to your aarch64 system path (normal PC is x86).
+
+![image-20201107222319190](https://i.loli.net/2020/11/07/o1LyGD8l3EHabkK.png)
+
+![image-20201107222409982](https://i.loli.net/2020/11/07/UGmwID86ZaKlV5n.png)
+
+If you setup correctly, thor can be successfully installed on **JetsonNano** as well.
+
+
+
+
 ## Install
 
 **If you are a newbie of C++ or Ubuntu, recommend you using simple mode**.
