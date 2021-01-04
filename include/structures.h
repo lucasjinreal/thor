@@ -72,8 +72,14 @@ struct Bbox {
   int cid;
 };
 struct InstanceSegmentation {
-  Bbox box;
-  // mask size uncertain
+  // Bbox box;
+
+  float xmin;
+  float ymin;
+  float xmax;
+  float ymax;
+  float score;
+  int cid;  // mask size uncertain
   float *mask;
   // vector<float> mask_vec;
   // id for ith position in mem data of masks
