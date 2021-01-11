@@ -73,6 +73,8 @@ b). If you need full capacity which thor does, including `vis`, `geometry`, `dat
 
 - **2050.01.01**: to be continue..
 
+- **2021.01.11**: New thor built with **C++14** by default. `det.pro` added `x, y, w, h` as attributes.
+
 - **2020.08.17**: thor now supports visualize lane:
 
     ```c++

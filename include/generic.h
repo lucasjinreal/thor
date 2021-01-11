@@ -29,12 +29,12 @@
 #define THOR_INCLUDE_GENERIC_H_
 #pragma once
 
-#include <iostream>
-#include <vector>
 #include <cmath>
-#include <vector>
-#include "assert.h"
+#include <iostream>
 #include <string>
+#include <vector>
+
+#include "assert.h"
 
 /**
  *
@@ -46,12 +46,47 @@
 
 using namespace std;
 
+namespace thor {
+namespace generic {
 
-namespace thor{
-namespace generic{
+template <typename IntType>
+class ForwardIndexValue {
+ public:
+  explicit ForwardIndexValue(IntType i) : value_(i) {}
+
+  IntType operator*() const { return value_; }
+
+  bool operator!=(ForwardIndexValue rhs) { return value_ != rhs.value_; }
+
+  ForwardIndexValue &operator++() {
+    ++value_;
+    return *this;
+  }
+
+ protected:
+  IntType value_;
+};
+
+template <typename IntType, template <typename> class IndexValueType>
+class IndexSequence {
+ public:
+  IndexSequence(IntType b, IntType e) : begin_(b), end_(e) {}
+
+  auto begin() const { return begin_; }
+  auto end() const { return end_; }
+
+ protected:
+  IndexValueType<IntType> begin_;
+  IndexValueType<IntType> end_;
+};
+
+template <typename Container>
+auto IndexesOf(Container &&container) {
+  using IntType = decltype(container.size());
+  return IndexSequence<IntType, ForwardIndexValue>(0, container.size());
+}
 
 constexpr double kMathEpsilon = 1e-10;
-
 
 class Vector2d {
  public:
@@ -109,8 +144,7 @@ class Vector2d {
 //! Multiplies the given Vec2d by a given scalar
 Vector2d operator*(const double ratio, const Vector2d &vec);
 
-}
-}
+}  // namespace generic
+}  // namespace thor
 
-
-#endif //THOR_INCLUDE_GENERIC_H_
+#endif  // THOR_INCLUDE_GENERIC_H_

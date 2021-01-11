@@ -25,73 +25,177 @@
 // Created by jintian on 18-1-12.
 //
 
-#ifndef CAO_CV_H
-#define CAO_CV_H
+#pragma once
 
 /**
  *  Several Compute Vision Algorithm
  *
  *  we using cao::cv:: do many things such as:
  *  nms
- *  crf
+ *  crfs
  */
 
+#include "generic.h"
+#include "iostream"
+#include "numeric"
+#include "proto/det.pb.h"
+#include "string"
 #include "structures.h"
 #include "vector"
-#include "iostream"
-
-using namespace std;
 
 namespace thor {
 namespace dl {
 
+using std::vector;
+using thor::dl::Detection2D;
+
 // add several CLASSES here
 vector<string> VOC_CLASSES = {"__background__",
-							  "aeroplane", "bicycle", "bird", "boat",
-							  "bottle", "bus", "car", "cat", "chair",
-							  "cow", "diningtable", "dog", "horse",
-							  "motorbike", "person", "pottedplant",
-							  "sheep", "sofa", "train", "tvmonitor"};
+                              "aeroplane",
+                              "bicycle",
+                              "bird",
+                              "boat",
+                              "bottle",
+                              "bus",
+                              "car",
+                              "cat",
+                              "chair",
+                              "cow",
+                              "diningtable",
+                              "dog",
+                              "horse",
+                              "motorbike",
+                              "person",
+                              "pottedplant",
+                              "sheep",
+                              "sofa",
+                              "train",
+                              "tvmonitor"};
 
-vector<string> VOC_CLASSES_NO_BK = {"aeroplane", "bicycle", "bird", "boat",
-							  "bottle", "bus", "car", "cat", "chair",
-							  "cow", "diningtable", "dog", "horse",
-							  "motorbike", "person", "pottedplant",
-							  "sheep", "sofa", "train", "tvmonitor"};
+vector<string> VOC_CLASSES_NO_BK = {
+    "aeroplane",   "bicycle", "bird",  "boat",      "bottle",
+    "bus",         "car",     "cat",   "chair",     "cow",
+    "diningtable", "dog",     "horse", "motorbike", "person",
+    "pottedplant", "sheep",   "sofa",  "train",     "tvmonitor"};
 
-vector<string> COCO_CLASSES = {
-	"__background__", "person", "bicycle", "car", "motorcycle", "airplane",
-	"bus", "train", "truck", "boat", "traffic light", "fire hydrant",
-	"stop sign", "parking meter", "bench", "bird", "cat", "dog", "horse",
-	"sheep", "cow", "elephant", "bear", "zebra", "giraffe", "backpack",
-	"umbrella", "handbag", "tie", "suitcase", "frisbee", "skis",
-	"snowboard", "sports ball", "kite", "baseball bat", "baseball glove",
-	"skateboard", "surfboard", "tennis racket", "bottle", "wine glass",
-	"cup", "fork", "knife", "spoon", "bowl", "banana", "apple", "sandwich",
-	"orange", "broccoli", "carrot", "hot dog", "pizza", "donut", "cake",
-	"chair", "couch", "potted plant", "bed", "dining table", "toilet", "tv",
-	"laptop", "mouse", "remote", "keyboard", "cell phone", "microwave",
-	"oven", "toaster", "sink", "refrigerator", "book", "clock", "vase",
-	"scissors", "teddy bear", "hair drier", "toothbrush"
-};
+vector<string> COCO_CLASSES = {"__background__",
+                               "person",
+                               "bicycle",
+                               "car",
+                               "motorcycle",
+                               "airplane",
+                               "bus",
+                               "train",
+                               "truck",
+                               "boat",
+                               "traffic light",
+                               "fire hydrant",
+                               "stop sign",
+                               "parking meter",
+                               "bench",
+                               "bird",
+                               "cat",
+                               "dog",
+                               "horse",
+                               "sheep",
+                               "cow",
+                               "elephant",
+                               "bear",
+                               "zebra",
+                               "giraffe",
+                               "backpack",
+                               "umbrella",
+                               "handbag",
+                               "tie",
+                               "suitcase",
+                               "frisbee",
+                               "skis",
+                               "snowboard",
+                               "sports ball",
+                               "kite",
+                               "baseball bat",
+                               "baseball glove",
+                               "skateboard",
+                               "surfboard",
+                               "tennis racket",
+                               "bottle",
+                               "wine glass",
+                               "cup",
+                               "fork",
+                               "knife",
+                               "spoon",
+                               "bowl",
+                               "banana",
+                               "apple",
+                               "sandwich",
+                               "orange",
+                               "broccoli",
+                               "carrot",
+                               "hot dog",
+                               "pizza",
+                               "donut",
+                               "cake",
+                               "chair",
+                               "couch",
+                               "potted plant",
+                               "bed",
+                               "dining table",
+                               "toilet",
+                               "tv",
+                               "laptop",
+                               "mouse",
+                               "remote",
+                               "keyboard",
+                               "cell phone",
+                               "microwave",
+                               "oven",
+                               "toaster",
+                               "sink",
+                               "refrigerator",
+                               "book",
+                               "clock",
+                               "vase",
+                               "scissors",
+                               "teddy bear",
+                               "hair drier",
+                               "toothbrush"};
 
-vector<string> COCO_CLASSES_NO_BK = {"person", "bicycle", "car", "motorcycle", "airplane",
-	"bus", "train", "truck", "boat", "traffic light", "fire hydrant",
-	"stop sign", "parking meter", "bench", "bird", "cat", "dog", "horse",
-	"sheep", "cow", "elephant", "bear", "zebra", "giraffe", "backpack",
-	"umbrella", "handbag", "tie", "suitcase", "frisbee", "skis",
-	"snowboard", "sports ball", "kite", "baseball bat", "baseball glove",
-	"skateboard", "surfboard", "tennis racket", "bottle", "wine glass",
-	"cup", "fork", "knife", "spoon", "bowl", "banana", "apple", "sandwich",
-	"orange", "broccoli", "carrot", "hot dog", "pizza", "donut", "cake",
-	"chair", "couch", "potted plant", "bed", "dining table", "toilet", "tv",
-	"laptop", "mouse", "remote", "keyboard", "cell phone", "microwave",
-	"oven", "toaster", "sink", "refrigerator", "book", "clock", "vase",
-	"scissors", "teddy bear", "hair drier", "toothbrush"
-};
+vector<string> COCO_CLASSES_NO_BK = {
+    "person",        "bicycle",      "car",
+    "motorcycle",    "airplane",     "bus",
+    "train",         "truck",        "boat",
+    "traffic light", "fire hydrant", "stop sign",
+    "parking meter", "bench",        "bird",
+    "cat",           "dog",          "horse",
+    "sheep",         "cow",          "elephant",
+    "bear",          "zebra",        "giraffe",
+    "backpack",      "umbrella",     "handbag",
+    "tie",           "suitcase",     "frisbee",
+    "skis",          "snowboard",    "sports ball",
+    "kite",          "baseball bat", "baseball glove",
+    "skateboard",    "surfboard",    "tennis racket",
+    "bottle",        "wine glass",   "cup",
+    "fork",          "knife",        "spoon",
+    "bowl",          "banana",       "apple",
+    "sandwich",      "orange",       "broccoli",
+    "carrot",        "hot dog",      "pizza",
+    "donut",         "cake",         "chair",
+    "couch",         "potted plant", "bed",
+    "dining table",  "toilet",       "tv",
+    "laptop",        "mouse",        "remote",
+    "keyboard",      "cell phone",   "microwave",
+    "oven",          "toaster",      "sink",
+    "refrigerator",  "book",         "clock",
+    "vase",          "scissors",     "teddy bear",
+    "hair drier",    "toothbrush"};
 
+bool ClassAgnosticNonMaximumSuppression(const std::vector<Detection2D> &input,
+                                        const double nms_threshold,
+                                        std::vector<Detection2D> *output);
 
-}
-}
+bool ClassAgnosticNonMaximumSuppression(const std::vector<Detection2D> &input,
+                                        const double nms_threshold,
+                                        std::vector<bool> *mask);
 
-#endif //CAO_CV_H
+}  // namespace dl
+}  // namespace thor

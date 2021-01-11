@@ -25,13 +25,10 @@
 // Created by jintian on 19-5-23.
 //
 
-
 #include "include/generic.h"
 
-
-namespace thor{
-namespace generic{
-
+namespace thor {
+namespace generic {
 
 ////////////////// Vec2d ////////////////////////
 Vector2d Vector2d::CreateUnitVec2d(const double angle) {
@@ -69,7 +66,7 @@ double Vector2d::InnerProd(const Vector2d &other) const {
 
 Vector2d Vector2d::rotate(const double angle) const {
   return Vector2d(x_ * cos(angle) - y_ * sin(angle),
-               x_ * sin(angle) + y_ * cos(angle));
+                  x_ * sin(angle) + y_ * cos(angle));
 }
 
 Vector2d Vector2d::operator+(const Vector2d &other) const {
@@ -114,14 +111,16 @@ Vector2d &Vector2d::operator/=(const double ratio) {
 
 bool Vector2d::operator==(const Vector2d &other) const {
   return (std::abs(x_ - other.x()) < kMathEpsilon &&
-      std::abs(y_ - other.y()) < kMathEpsilon);
+          std::abs(y_ - other.y()) < kMathEpsilon);
 }
 
-Vector2d operator*(const double ratio, const Vector2d &vec) { return vec * ratio; }
+Vector2d operator*(const double ratio, const Vector2d &vec) {
+  return vec * ratio;
+}
 
 std::string Vector2d::DebugString() const {
   return "vec2d ( x = " + to_string(x_) + "  y = " + to_string(y_) + " )";
 }
 
-}
-}
+}  // namespace generic
+}  // namespace thor

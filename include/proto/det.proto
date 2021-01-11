@@ -15,4 +15,8 @@ message Detection2D {
     optional Box box=1;
     optional int32 cls_id = 2;
     optional double prob = 3;
+    optional int32 x = 4;
+    optional int32 y = 5;
+    optional int32 w = 6;
+    optional int32 h = 7;
 }
