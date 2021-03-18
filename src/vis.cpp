@@ -418,10 +418,12 @@ cv::Mat VisualizeDetections(cv::Mat &img, vector<thor::Detection> detections,
                             const bool enable_mask, const bool normalized) {
   const int font = cv::FONT_HERSHEY_SIMPLEX;
   const int font_thickness = 1;
+
   cv::Mat mask = cv::Mat::zeros(img.size(), CV_8UC3);
+
   for (int i = 0; i < detections.size(); ++i) {
     thor::Detection det = detections[i];
-    const auto score = (float)det.prob;
+    const auto score = static_cast<float>(det.prob);
     if (score >= confidence_threshold) {
       cv::Point pt1, pt2;
       if (normalized) {
@@ -440,15 +442,17 @@ cv::Mat VisualizeDetections(cv::Mat &img, vector<thor::Detection> detections,
       if (colors != nullptr) {
         u_c = (*colors)[det.classId];
       } else {
-        u_c = thor::vis::gen_unique_color_cv(det.classId);
+        u_c = thor::vis::gen_unique_color_cv(det.classId + 8);
       }
       cv::rectangle(img, pt1, pt2, u_c, line_thickness, cv::LINE_4, 0);
-      cv::rectangle(mask, pt1, pt2, u_c, cv::FILLED, 0);
+      if (enable_mask) {
+        cv::rectangle(mask, pt1, pt2, u_c, cv::FILLED, 0);
+      }
 
       // CV_FONT_HERSHEY_DUPLEX
 
       char score_str[256];
-      sprintf(score_str, "%.1f", score * 100);
+      snprintf(score_str, sizeof(score_str), "%.1f", score * 100);
       std::string label_text =
           classes_names[det.classId] + " " + string(score_str) + "%";
       int base_line = 4;
@@ -462,10 +466,84 @@ cv::Mat VisualizeDetections(cv::Mat &img, vector<thor::Detection> detections,
                   cv::Scalar(255, 255, 255), font_thickness, cv::LINE_AA);
     }
   }
-  cv::Mat combined;
-  cv::addWeighted(img, 0.8, mask, 0.6, 0.6, combined);
-  // maybe combine a mask img back later
-  return combined;
+
+  if (enable_mask) {
+    cv::Mat combined;
+    cv::addWeighted(img, 0.8, mask, 0.6, 0.6, combined);
+    // maybe combine a mask img back later
+    return combined;
+  } else {
+    return img;
+  }
+}
+
+cv::Mat VisualizeDetectionsWithOverrideColors(
+    cv::Mat &img, vector<thor::Detection> detections,
+    const vector<string> classes_names,
+    const std::map<int, cv::Scalar> *override_colors,
+    const float line_thickness, const float font_scale, const bool fancy,
+    const float confidence_threshold, const bool enable_mask,
+    const bool normalized) {
+  const int font = cv::FONT_HERSHEY_SIMPLEX;
+  const int font_thickness = 1;
+
+  cv::Mat mask = cv::Mat::zeros(img.size(), CV_8UC3);
+
+  for (int i = 0; i < detections.size(); ++i) {
+    thor::Detection det = detections[i];
+    const auto score = static_cast<float>(det.prob);
+    if (score >= confidence_threshold) {
+      cv::Point pt1, pt2;
+      if (normalized) {
+        pt1.x = (img.cols * det.bbox.x1);
+        pt1.y = (img.rows * det.bbox.y1);
+        pt2.x = (img.cols * det.bbox.x2);
+        pt2.y = (img.rows * det.bbox.y2);
+      } else {
+        pt1.x = det.bbox.x1;
+        pt1.y = det.bbox.y1;
+        pt2.x = det.bbox.x2;
+        pt2.y = det.bbox.y2;
+      }
+
+      cv::Scalar u_c;
+      if ((override_colors != nullptr) &&
+          override_colors->count(det.classId) > 0) {
+        u_c = (*override_colors).at(det.classId);
+      } else {
+        u_c = thor::vis::gen_unique_color_cv(det.classId + 8);
+      }
+      cv::rectangle(img, pt1, pt2, u_c, line_thickness, cv::LINE_4, 0);
+      if (enable_mask) {
+        cv::rectangle(mask, pt1, pt2, u_c, cv::FILLED, 0);
+      }
+
+      // CV_FONT_HERSHEY_DUPLEX
+
+      char score_str[256];
+      snprintf(score_str, sizeof(score_str), "%.1f", score * 100);
+      std::string label_text =
+          classes_names[det.classId] + " " + string(score_str) + "%";
+      int base_line = 4;
+      cv::Point text_origin = cv::Point(pt1.x + 2, pt1.y - base_line);
+      cv::Size text_size = cv::getTextSize(label_text, font, font_scale,
+                                           font_thickness, &base_line);
+      cv::rectangle(
+          mask, cv::Point(pt1.x, text_origin.y - text_size.height - base_line),
+          cv::Point(text_origin.x + text_size.width + 2, pt1.y), u_c, -1, 0);
+      cv::putText(img, label_text, text_origin, font, font_scale,
+                  cv::Scalar(255, 255, 255), font_thickness, cv::LINE_AA);
+    }
+  }
+
+  if (enable_mask) {
+    cv::Mat combined;
+    cv::addWeighted(img, 0.8, mask, 0.6, 0.6, combined);
+    // maybe combine a mask img back later
+    return combined;
+  } else {
+    return img;
+  }
 }
 
 #ifdef USE_PROTOBUF
@@ -640,7 +718,7 @@ cv::Mat VisualizeDetectionStyleDetectron2(
   cv::addWeighted(img, 0.8, mask, 0.6, 0.6, combined);
   // maybe combine a mask img back later
   return combined;
-};
+}
 
 /////////////////////////// Visualize Lanes ////////////////////
 cv::Mat VisualizeLanes(cv::Mat &img, const vector<vector<cv::Point>> &lanes,
