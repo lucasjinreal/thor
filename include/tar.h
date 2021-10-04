@@ -27,6 +27,8 @@
 
 using std::integer_sequence;
 using std::make_unique;
+using std::move;
+using std::stol;
 
 namespace thor {
 namespace tar {
@@ -191,15 +193,16 @@ inline std::tuple<std::string, std::size_t> read_posix_header(
   auto const size = read<field_name::size>(buffer);
   auto const filename = cut_null(read<field_name::name>(buffer));
 
-  if (magic != "ustar") {
-    throw std::runtime_error(
-        "Tar: loaded file without magic 'ustar', magic is: '" +
-        thor::io::mask_non_print(magic) + "'");
-  }
+//   if (magic != "ustar") {
+//     throw std::runtime_error(
+//         "Tar: loaded file without magic 'ustar', magic is: '" +
+//         thor::io::mask_non_print(magic) + "'");
+    
+//   }
 
-  if (checksum != calc_checksum(buffer)) {
-    throw std::runtime_error("Tar: loaded file with wrong checksum");
-  }
+//   if (checksum != calc_checksum(buffer)) {
+//     throw std::runtime_error("Tar: loaded file with wrong checksum");
+//   }
 
   return std::make_tuple(std::move(filename),
                          static_cast<std::size_t>(std::stol(size, 0, 8)));

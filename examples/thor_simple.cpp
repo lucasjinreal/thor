@@ -46,7 +46,7 @@ using namespace thor::dl;
 using thor::tar::tar_reader;
 
 int main() {
-  PRINT_RED("hello, we are testing some basic function in thor...");
+  PRINT_BLUE("HELLO, we are testing some basic function in thor...");
 
   PRINT_GREEN("1. test a timer.");
   thor::Timer timer(20);
