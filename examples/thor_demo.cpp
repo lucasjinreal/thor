@@ -23,28 +23,32 @@
  */
 
 #include <iostream>
+
 #include "opencv2/core.hpp"
 #include "opencv2/opencv.hpp"
 #include "thor/app_license.h"
 #include "thor/colors.h"
 #include "thor/cv_ex.h"
 #include "thor/datum.h"
+#include "thor/functions.h"
 #include "thor/logging.h"
+#include "thor/macro.h"
 #include "thor/math.h"
 #include "thor/os.h"
 #include "thor/slam.h"
 #include "thor/str_util.h"
-#include "thor/vis.h"
-#include "thor/macro.h"
 #include "thor/timer.h"
-#include "thor/functions.h"
+#include "thor/vis.h"
 
-using namespace std;
-using namespace thor;
+using std::vector;
 
-using namespace thor::str_util;
-using namespace thor::datum;
-using namespace thor::generic;
+using thor::datum::AABox2d;
+using thor::datum::LineSegment2d;
+using thor::datum::Vector2d;
+using thor::str_util::PrintVec;
+
+using thor::CvxText;
+using thor::math;
 
 static int ToWchar(char *&src, wchar_t *&dest,
                    const char *locale = "zh_CN.utf8") {
@@ -105,10 +109,11 @@ int main(int argc, char **argv) {
     return -1;
   }
 
-  thor::CvxText cvText("../FZSSJW.TTF");  //指定字体
+  thor::CvxText cvText("../FZSSJW.TTF");  // 指定字体
   cv::Scalar size1{38, 0.5, 0.1, 0};  // (字体大小, 无效的, 字符间距, 无效的 }
   cvText.setFont(nullptr, &size1, nullptr, 0);
-  char *str = (char *)"你好，世界!";
+
+  char *str = static_cast<char *>("你好，世界!");
   wchar_t *w_str;
   ToWchar(str, w_str);
   cvText.putText(img, w_str, cv::Point(50, 100), cv::Scalar(255, 0, 255));
@@ -182,20 +187,18 @@ int main(int argc, char **argv) {
   cout << "cost time: " << timer.lap() << endl;
 
   std::chrono::system_clock::time_point toc = std::chrono::system_clock::now();
-  std::chrono::duration<double > d = toc - tic;
+  std::chrono::duration<double> d = toc - tic;
   auto d_sec = std::chrono::duration_cast<std::chrono::seconds>(d).count();
   cout << d.count() << endl;
   cout << d_sec << endl;
 
-
   cv::imshow("demo", img);
   cv::waitKey(0);
 
-
   LOG(INFO) << "test for functions...";
-  LOG(INFO)  << "        softmax:";
-  float* values = {-0.9381,  0.8967};
-  float* probs;
+  LOG(INFO) << "        softmax:";
+  float *values = {-0.9381, 0.8967};
+  float *probs;
   thor::functions::softmax_1d(values, probs, 2);
   LOG(INFO) << probs[0] << " " << probs[1];
 
