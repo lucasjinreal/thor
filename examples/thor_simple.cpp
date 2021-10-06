@@ -24,8 +24,8 @@
 
 #include <zconf.h>
 
-#include <iostream>
 #include <fstream>
+#include <iostream>
 
 #include "thor/det.pb.h"
 #include "thor/functions.h"
@@ -33,17 +33,17 @@
 #include "thor/logging.h"
 #include "thor/macro.h"
 #include "thor/os.h"
-#include "thor/timer.h"
 #include "thor/tar.h"
+#include "thor/timer.h"
 
-using std::iostream;
+using std::cout;
+using std::endl;
 using std::ifstream;
+using std::iostream;
 using std::vector;
 
 using namespace thor::log;
 using namespace thor::dl;
-
-using thor::tar::tar_reader;
 
 int main() {
   PRINT_BLUE("HELLO, we are testing some basic function in thor...");
@@ -110,7 +110,15 @@ int main() {
   LOG(INFO) << frame_possession.DebugString();
 
   PRINT_GREEN("4. test tar.");
-  tar_reader tr("../imgs.tar");
-  tr.list_files();
-  istream& is = tr.get("2.png");
+  TarFile tr("../test.tar");
+  bool is_valid_tar_file = tr.IsValidTarFile();
+  if (!is_valid_tar_file) {
+    cout << "not valid tar file.\n";
+    return -1;
+  }
+  auto ns = tr.GetFileNames();
+  cout << ns.size() << endl;
+  for (auto a : ns) {
+    cout << a << endl;
+  }
 }

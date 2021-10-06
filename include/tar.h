@@ -7,354 +7,91 @@
 // file LICENSE_1_0.txt or copy at https://www.boost.org/LICENSE_1_0.txt)
 //-----------------------------------------------------------------------------
 #pragma once
-
-#include <algorithm>
-#include <array>
-#include <fstream>
-#include <functional>
-#include <iomanip>
-#include <iostream>
-#include <map>
-#include <memory>
-#include <set>
-#include <sstream>
 #include <string>
-#include <tuple>
-#include <utility>
 #include <vector>
+#include <cstring>
 
-#include "thor/io.h"
+using std::memset;
 
-using std::integer_sequence;
-using std::make_unique;
-using std::move;
-using std::stol;
+/* reference:
+        http://www.gnu.org/software/tar/manual/html_node/Standard.html
+        http://stackoverflow.com/questions/2505042/how-to-parse-a-tar-file-in-c
+        http://directory.fsf.org/wiki/Libtar
+        http://work.freenet59.ru/svn/pkgsrc_haiku/trunk/archivers/libarchive/files/contrib/untar.c
+        https://codeistry.wordpress.com/2014/08/14/how-to-parse-a-tar-file/
+        http://stackoverflow.com/questions/17862383/how-to-know-the-files-inside-the-tar-parser
+        https://en.wikipedia.org/wiki/Tar_(computing)
+*/
 
-namespace thor {
-namespace tar {
+/* tar Header Block, from POSIX 1003.1-1990.  */
 
-using index_t = std::string::difference_type;
+/* POSIX header.  */
 
-template <index_t... I>
-using index_sequence_t = std::integer_sequence<index_t, I...>;
+typedef struct posix_header { /* byte offset */
+  char name[100];             /*   0 */
+  char mode[8];               /* 100 */
+  char uid[8];                /* 108 */
+  char gid[8];                /* 116 */
+  char size[12];              /* 124 */
+  char mtime[12];             /* 136 */
+  char chksum[8];             /* 148 */
+  char typeflag;              /* 156 */
+  char linkname[100];         /* 157 */
+  char magic[6];              /* 257 */
+  char version[2];            /* 263 */
+  char uname[32];             /* 265 */
+  char gname[32];             /* 297 */
+  char devmajor[8];           /* 329 */
+  char devminor[8];           /* 337 */
+  char prefix[155];           /* 345 */
+                              /* 500 */
+} tar_posix_header;
 
-using field_size_t = index_sequence_t<100, 8, 8, 8, 12, 12, 8, 1, 100, 6, 2, 32,
-                                      32, 8, 8, 155, 12>;
+/*
+        location  size  field
+        0         100   File name
+        100       8     File mode
+        108       8     Owner's numeric user ID
+        116       8     Group's numeric user ID
+        124       12    File size in bytes
+        136       12    Last modification time in numeric Unix time format
+        148       8     Checksum for header block
+        156       1     Link indicator (file type)
+        157       100   Name of linked file
+*/
 
-template <typename IntegerSequence, index_t X>
-struct get_integer;
+#define TMAGIC "ustar" /* ustar and a null */
+#define TMAGLEN 6
+#define TVERSION "00" /* 00 and no null */
+#define TVERSLEN 2
 
-template <index_t H, index_t... I, index_t X>
-struct get_integer<index_sequence_t<H, I...>, X> {
-  static constexpr index_t value =
-      get_integer<index_sequence_t<I...>, X - 1>::value;
-};
+/* Values used in typeflag field.  */
+#define REGTYPE '0'   /* regular file */
+#define AREGTYPE '\0' /* regular file */
+#define LNKTYPE '1'   /* link */
+#define SYMTYPE '2'   /* reserved */
+#define CHRTYPE '3'   /* character special */
+#define BLKTYPE '4'   /* block special */
+#define DIRTYPE '5'   /* directory */
+#define FIFOTYPE '6'  /* FIFO special */
+#define CONTTYPE '7'  /* reserved */
 
-template <index_t H, index_t... I>
-struct get_integer<index_sequence_t<H, I...>, index_t(0)> {
-  static constexpr index_t value = H;
-};
-
-template <index_t X>
-struct field_size {
-  static constexpr index_t value = get_integer<field_size_t, X>::value;
-};
-
-template <typename IntegerSequence, index_t X>
-struct get_integer_start;
-
-template <index_t H, index_t... I, index_t X>
-struct get_integer_start<index_sequence_t<H, I...>, X> {
-  static constexpr index_t value =
-      get_integer_start<index_sequence_t<I...>, X - 1>::value + H;
-};
-
-template <index_t H, index_t... I>
-struct get_integer_start<index_sequence_t<H, I...>, index_t(0)> {
-  static constexpr index_t value = 0;
-};
-
-template <index_t X>
-struct field_start {
-  static constexpr index_t value = get_integer_start<field_size_t, X>::value;
-};
-
-struct field_name {
-  enum values {
-    name,
-    mode,
-    uid,
-    gid,
-    size,
-    mtime,
-    checksum,
-    typeflag,
-    linkname,
-    magic,
-    version,
-    uname,
-    gname,
-    devmajor,
-    devminor,
-    prefix,
-    pad
-  };
-};
-
-template <index_t FieldName, typename Container>
-void write(std::array<char, 512>& buffer, Container const& container) {
-  static constexpr auto start = field_start<FieldName>::value;
-  static constexpr auto size = field_size<FieldName>::value;
-
-  auto const begin = container.begin();
-  auto const end = container.end();
-
-  if (end - begin > size) {
-    throw std::runtime_error(
-        thor::io::make_string("Tar: field data to long: [", FieldName,
-                              "] is: ", end - begin, ", max: ", size));
-  }
-
-  std::copy(begin, end, buffer.begin() + start);
-  std::fill(buffer.begin() + start + (end - begin),
-            buffer.begin() + start + size, 0);
-}
-
-template <index_t FieldName>
-std::string read(std::array<char, 512> const& buffer) {
-  static constexpr auto start = field_start<FieldName>::value;
-  static constexpr auto size = field_size<FieldName>::value;
-
-  return std::string(buffer.begin() + start, buffer.begin() + start + size);
-}
-
-constexpr std::array<char, field_size<field_name::checksum>::value>
-    empty_checksum{{' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '}};
-
-constexpr std::array<char, 5> magic{{'u', 's', 't', 'a', 'r'}};
-constexpr std::array<char, 6> mode{{'0', '0', '0', '6', '4', '4'}};
-constexpr std::array<char, 1> typeflag{{'0'}};
-
-inline std::string calc_checksum(std::array<char, 512> buffer) {
-  write<field_name::checksum>(buffer, empty_checksum);
-
-  unsigned sum = 0;
-  for (unsigned i : buffer) sum += i;
-
-  std::ostringstream os;
-  os << std::oct << std::setfill('0') << std::setw(6) << sum << '\0' << ' ';
-
-  return os.str();
-}
-
-inline std::array<char, 512> make_posix_header(std::string const& name,
-                                               std::size_t size) {
-  std::array<char, 512> buffer{};
-
-  std::ostringstream os;
-  os << std::oct << std::setfill('0') << std::setw(11) << std::time(nullptr);
-  std::string mtime = os.str();
-
-  write<field_name::magic>(buffer, magic);
-  write<field_name::mode>(buffer, mode);
-  write<field_name::mtime>(buffer, mtime);
-  write<field_name::typeflag>(buffer, typeflag);
-
-  // Set filename
-  if (name.size() == 0) {
-    throw std::runtime_error("Tar: filename is empty");
-  }
-
-  if (name.size() >= 100) {
-    throw std::runtime_error("Tar: filename larger than 99 charakters");
-  }
-
-  write<field_name::name>(buffer, name);
-
-  // Set size
-  os.str("");
-  os << std::oct << std::setfill('0') << std::setw(11) << size;
-  write<field_name::size>(buffer, os.str());
-
-  // Set checksum
-  write<field_name::checksum>(buffer, calc_checksum(buffer));
-
-  return buffer;
-}
-
-inline std::string cut_null(std::string const& data) {
-  return data.substr(0, data.find('\0'));
-}
-
-inline std::tuple<std::string, std::size_t> read_posix_header(
-    std::array<char, 512> const& buffer) {
-  auto const checksum = read<field_name::checksum>(buffer);
-  auto const magic = cut_null(read<field_name::magic>(buffer));
-  auto const size = read<field_name::size>(buffer);
-  auto const filename = cut_null(read<field_name::name>(buffer));
-
-//   if (magic != "ustar") {
-//     throw std::runtime_error(
-//         "Tar: loaded file without magic 'ustar', magic is: '" +
-//         thor::io::mask_non_print(magic) + "'");
-    
-//   }
-
-//   if (checksum != calc_checksum(buffer)) {
-//     throw std::runtime_error("Tar: loaded file with wrong checksum");
-//   }
-
-  return std::make_tuple(std::move(filename),
-                         static_cast<std::size_t>(std::stol(size, 0, 8)));
-}
-
-/// \brief Write a simple tar file
-class tar_writer {
+class TarFile {
  public:
-  explicit tar_writer(std::string const& filename)
-      : outfile_(new std::ofstream(filename.c_str(),
-                                   std::ios_base::out | std::ios_base::binary)),
-        out_(*outfile_) {}
-
-  explicit tar_writer(std::ostream& out) : out_(out) {}
-
-  ~tar_writer() {
-    static char const dummy[1024] = {0};
-    out_.write(dummy, 1024);
-  }
-
-  void write(std::string const& filename, char const* content,
-             std::size_t size) {
-    write(
-        filename, [&](std::ostream& os) { os.write(content, size); }, size);
-  }
-
-  void write(std::string const& filename, std::string const& content) {
-    write(filename, content.data(), content.size());
-  }
-
-  void write(std::string const& filename,
-             std::function<void(std::ostream&)> const& writer) {
-    std::ostringstream os(std::ios_base::out | std::ios_base::binary);
-    writer(os);
-    write(filename, os.str());
-  }
-
-  void write(std::string const& filename,
-             std::function<void(std::ostream&)> const& writer,
-             std::size_t size) {
-    if (!filenames_.emplace(filename).second) {
-      throw std::runtime_error("Duplicate filename in tar-file: " + filename);
-    }
-
-    auto const header = thor::tar::make_posix_header(filename, size);
-
-    std::size_t end_record_bytes = (512 - (size % 512)) % 512;
-    std::vector<char> buffer(end_record_bytes);
-
-    auto start = out_.tellp();
-    out_.write(header.data(), header.size());
-
-    writer(out_);
-    auto wrote_size = static_cast<std::size_t>(out_.tellp() - start) - 512;
-    if (wrote_size != size) {
-      out_.seekp(start);
-      throw std::runtime_error(thor::io::make_string(
-          "While writing '", filename, "' to tar-file: Writer function wrote ",
-          wrote_size, " bytes, but ", size, " where expected"));
-    }
-
-    out_.write(buffer.data(), buffer.size());
-  }
+  explicit TarFile(const char* tar_name);
+  bool IsValidTarFile();
+  std::vector<std::string> GetFileNames();
+  bool GetFileContents(const char* file_name, char* contents);
+  size_t GetFileSize(const char* file_name);
+  size_t GetTarSize();
+  ~TarFile();
 
  private:
-  /// \brief Output file, if the filename constructor have been called
-  std::unique_ptr<std::ofstream> outfile_;
-
-  /// \brief Output stream
-  std::ostream& out_;
-
-  /// \brief No filename duplicates
-  std::set<std::string> filenames_;
+  FILE* file;
+  size_t size;
+  std::vector<std::string> file_names;
+  std::vector<size_t> file_sizes;
+  std::vector<size_t> file_data_start_addrs;
 };
 
-/// \brief Write a simple tar file
-class tar_reader {
- public:
-  explicit tar_reader(std::string const& filename)
-      : isptr_(std::make_unique<std::ifstream>(
-            filename.c_str(), std::ios_base::in | std::ios_base::binary)),
-        is_(*isptr_.get()) {
-    init();
-  }
-
-  explicit tar_reader(std::istream& is) : is_(is) { init(); }
-
-  inline void list_files() {
-    for (auto& mp : files_) {
-      std::cout << mp.first << std::endl;
-    }
-  }
-
-  std::istream& get(std::string const& filename) {
-    auto iter = files_.find(filename);
-    if (iter == files_.end()) {
-      throw std::runtime_error("Filename-entry not fount in tar-file: " +
-                               filename);
-    }
-
-    iter->second.seekg(0);
-    return iter->second;
-  }
-
- private:
-  void init() {
-    static constexpr std::array<char, 512> empty_buffer{};
-
-    std::array<char, 512> buffer;
-    while (is_) {
-      is_.read(buffer.data(), 512);
-
-      if (buffer == empty_buffer) {
-        is_.read(buffer.data(), 512);
-        if (buffer != empty_buffer || !is_) {
-          throw std::runtime_error("Corrupt tar-file.");
-        }
-        break;
-      }
-
-      std::string filename;
-      std::size_t size;
-      std::tie(filename, size) = thor::tar::read_posix_header(buffer);
-
-      auto result = files_.emplace(
-          std::piecewise_construct, std::forward_as_tuple(filename),
-          std::forward_as_tuple(is_.rdbuf(), is_.tellg(), size));
-      if (!result.second) {
-        throw std::runtime_error(
-            "Duplicate filename-entry while reading tar-file: " + filename);
-      }
-
-      std::streampos file_size_in_tar = size + (512 - (size % 512)) % 512;
-      is_.seekg(is_.tellg() + file_size_in_tar);
-
-      if (!is_) {
-        throw std::runtime_error("Tar filename-entry with illegal size: " +
-                                 filename);
-      }
-    }
-  }
-
-  /// \brief Stream if read via filename
-  std::unique_ptr<std::ifstream> isptr_;
-
-  /// \brief Input stream of the tar-file
-  std::istream& is_;
-
-  /// \brief Map of filenames and contents
-  std::map<std::string, thor::io::isubstream> files_;
-};
-
-}  // namespace tar
-
-}  // namespace thor
+int test_tar();
