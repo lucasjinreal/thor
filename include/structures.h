@@ -152,13 +152,13 @@ struct Box {
   float area() {
     switch (this->format) {
       case XYXY:
-        return (this->xmax - this->xmin) * (this->ymax - this->xmax);
+        return (this->xmax - this->xmin) * (this->ymax - this->ymin);
         break;
       case TLWH:
         return this->w * this->h;
         break;
       default:
-        return (this->xmax - this->xmin) * (this->ymax - this->xmax);
+        return (this->xmax - this->xmin) * (this->ymax - this->ymin);
         break;
     }
   }
