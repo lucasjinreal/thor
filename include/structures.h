@@ -151,15 +151,20 @@ struct Box {
     switch (this->format) {
       case XYXY:
         std::cout << "x1:" << this->xmin << ",y1:" << this->ymin
-                  << ",x2:" << this->xmax << ",y2:" << this->ymax << std::endl;
+                  << ",x2:" << this->xmax << ",y2:" << this->ymax
+                  << ",id:" << this->idx << ",score:" << this->score
+                  << std::endl;
         break;
       case TLWH:
         std::cout << "top:" << this->top << ",left:" << this->left
-                  << ",w:" << this->w << ",h:" << this->h << std::endl;
+                  << ",w:" << this->w << ",h:" << this->h << ",id:" << this->idx
+                  << ",score:" << this->score << std::endl;
         break;
       default:
         std::cout << "x1:" << this->xmin << ",y1:" << this->ymin
-                  << ",x2:" << this->xmax << ",y2:" << this->ymax << std::endl;
+                  << ",x2:" << this->xmax << ",y2:" << this->ymax
+                  << ",id:" << this->idx << ",score:" << this->score
+                  << std::endl;
         break;
     }
   }
