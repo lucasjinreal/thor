@@ -1,34 +1,56 @@
-//
-// Created by JinTian on 02/01/2018.
-//
+/*
+ * Copyright (c) 2021 Fagang Jin.
+ *
+ * This file is part of thor
+ * (see manaai.cn).
+ *
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
 
-#ifndef CAO_MATH_H
-#define CAO_MATH_H
+#pragma once
 
-
-#ifdef USE_EIGEN
-#ifdef USE_OPENCV
-
+#include <algorithm>
+#include <cassert>
 #include <cmath>
+#include <utility>
 #include <vector>
-
-#include "assert.h"
-#include "opencv2/opencv.hpp"
-
-#include "Eigen/Core"
-#include "Eigen/Eigen"
 
 #include "./generic.h"
 #include "./logging.h"
+#include "./structures.h"
 
-using namespace std;
-using namespace thor::generic;
+#ifdef USE_EIGEN
+#ifdef USE_OPENCV
+#include "Eigen/Core"
+#include "Eigen/Eigen"
+#include "opencv2/opencv.hpp"
+#endif
+#endif
+
+using std::cout;
+using std::vector;
+using thor::Box;
+using thor::BoxFormat;
+using thor::generic::Vector2d;
 
 /**
  *  A math module do higher calculate
  */
-
-
 
 namespace thor {
 namespace math {
@@ -45,19 +67,30 @@ inline T euclidean(vector<T> const &v_a, vector<T> const &v_b) {
   sum = sqrt(sum);
   return sum;
 }
-bool polynomial_curve_fit(std::vector<cv::Point> &key_point, int n, cv::Mat &A);
 
-
+inline float IntersectionArea(Box *a, Box *b) {
+  if (a->format != BoxFormat::XYXY || b->format != BoxFormat::XYXY) {
+    a->to_xyxy();
+    b->to_xyxy();
+  }
+  float x1 = std::max(a->xmin, b->xmin);
+  float y1 = std::max(a->ymin, b->ymin);
+  float x2 = std::min(a->xmax, b->xmax);
+  float y2 = std::min(a->ymax, b->ymax);
+  return (x2 - x1) * (y2 - y1);
+}
 
 ///////////////////// new math APIs //////////////////////////
-inline double Sqr(const double x) { return x * x; };
+inline double Sqr(const double x) { return x * x; }
 
-inline double CrossProd(const Vector2d &start_point, const Vector2d &end_point_1,
-                        const Vector2d &end_point_2){
+inline double CrossProd(const Vector2d &start_point,
+                        const Vector2d &end_point_1,
+                        const Vector2d &end_point_2) {
   return (end_point_1 - start_point).CrossProd(end_point_2 - start_point);
 }
-inline double InnerProd(const Vector2d &start_point, const Vector2d &end_point_1,
-                        const Vector2d &end_point_2){
+inline double InnerProd(const Vector2d &start_point,
+                        const Vector2d &end_point_1,
+                        const Vector2d &end_point_2) {
   return (end_point_1 - start_point).InnerProd(end_point_2 - start_point);
 }
 
@@ -69,7 +102,6 @@ inline double InnerProd(const double x0, const double y0, const double x1,
                         const double y1) {
   return x0 * x1 + y0 * y1;
 }
-
 
 double WrapAngle(const double angle);
 
@@ -135,6 +167,16 @@ inline void L2Norm(int feat_dim, float *feat_data) {
   }
 }
 
+}  // namespace math
+}  // namespace thor
+
+#ifdef USE_EIGEN
+#ifdef USE_OPENCV
+namespace thor {
+namespace math {
+bool polynomial_curve_fit(const std::vector<cv::Point> *key_point, int n,
+                          cv::Mat &A);
+
 // !---------------- define using for Matrix calculation
 template <typename T, unsigned int N>
 Eigen::Matrix<T, N, N> PseudoInverse(const Eigen::Matrix<T, N, N> &m,
@@ -142,11 +184,11 @@ Eigen::Matrix<T, N, N> PseudoInverse(const Eigen::Matrix<T, N, N> &m,
   Eigen::JacobiSVD<Eigen::Matrix<T, N, N>> svd(
       m, Eigen::ComputeFullU | Eigen::ComputeFullV);
   return svd.matrixV() *
-      (svd.singularValues().array().abs() > epsilon)
-          .select(svd.singularValues().array().inverse(), 0)
-          .matrix()
-          .asDiagonal() *
-      svd.matrixU().adjoint();
+         (svd.singularValues().array().abs() > epsilon)
+             .select(svd.singularValues().array().inverse(), 0)
+             .matrix()
+             .asDiagonal() *
+         svd.matrixU().adjoint();
 }
 
 /**
@@ -190,7 +232,8 @@ bool ContinuousToDiscrete(const Eigen::Matrix<T, L, L> &m_a,
                           Eigen::Matrix<T, O, L> *ptr_c_d,
                           Eigen::Matrix<T, O, N> *ptr_d_d) {
   if (ts <= 0.0) {
-    thor::log::LOG(ERROR) << "ContinuousToDiscrete : ts is less than or equal to zero";
+    thor::log::LOG(ERROR)
+        << "ContinuousToDiscrete : ts is less than or equal to zero";
     return false;
   }
 
@@ -203,7 +246,7 @@ bool ContinuousToDiscrete(const Eigen::Matrix<T, L, L> &m_a,
 
   Eigen::Matrix<T, L, L> m_identity = Eigen::Matrix<T, L, L>::Identity();
   *ptr_a_d = PseudoInverse<T, L>(m_identity - ts * 0.5 * m_a) *
-      (m_identity + ts * 0.5 * m_a);
+             (m_identity + ts * 0.5 * m_a);
 
   *ptr_b_d =
       std::sqrt(ts) * PseudoInverse<T, L>(m_identity - ts * 0.5 * m_a) * m_b;
@@ -222,14 +265,8 @@ bool ContinuousToDiscrete(const Eigen::MatrixXd &m_a,
                           const Eigen::MatrixXd &m_d, const double ts,
                           Eigen::MatrixXd *ptr_a_d, Eigen::MatrixXd *ptr_b_d,
                           Eigen::MatrixXd *ptr_c_d, Eigen::MatrixXd *ptr_d_d);
-
 }  // namespace math
+
 }  // namespace thor
-
-
-
 #endif
 #endif
-
-
-#endif  // CAO_MATH_H

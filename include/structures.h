@@ -107,6 +107,7 @@ struct Box {
 
   BoxFormat format;
 
+  Box() {}
   Box(int a, int b, int c, int d, int format = BoxFormat::XYXY) {
     switch (format) {
       case XYXY:
@@ -145,6 +146,20 @@ struct Box {
       this->xmax = left + w;
       this->ymax = top + h;
       format = BOTH;
+    }
+  }
+
+  float area() {
+    switch (this->format) {
+      case XYXY:
+        return (this->xmax - this->xmin) * (this->ymax - this->xmax);
+        break;
+      case TLWH:
+        return this->w * this->h;
+        break;
+      default:
+        return (this->xmax - this->xmin) * (this->ymax - this->xmax);
+        break;
     }
   }
   void print() {
