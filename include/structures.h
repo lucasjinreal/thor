@@ -107,6 +107,7 @@ struct Box {
 
   BoxFormat format;
 
+  Box() {}
   Box(int a, int b, int c, int d, int format = BoxFormat::XYXY) {
     switch (format) {
       case XYXY:
@@ -147,19 +148,38 @@ struct Box {
       format = BOTH;
     }
   }
+
+  float area() {
+    switch (this->format) {
+      case XYXY:
+        return (this->xmax - this->xmin) * (this->ymax - this->ymin);
+        break;
+      case TLWH:
+        return this->w * this->h;
+        break;
+      default:
+        return (this->xmax - this->xmin) * (this->ymax - this->ymin);
+        break;
+    }
+  }
   void print() {
     switch (this->format) {
       case XYXY:
         std::cout << "x1:" << this->xmin << ",y1:" << this->ymin
-                  << ",x2:" << this->xmax << ",y2:" << this->ymax << std::endl;
+                  << ",x2:" << this->xmax << ",y2:" << this->ymax
+                  << ",id:" << this->idx << ",score:" << this->score
+                  << std::endl;
         break;
       case TLWH:
         std::cout << "top:" << this->top << ",left:" << this->left
-                  << ",w:" << this->w << ",h:" << this->h << std::endl;
+                  << ",w:" << this->w << ",h:" << this->h << ",id:" << this->idx
+                  << ",score:" << this->score << std::endl;
         break;
       default:
         std::cout << "x1:" << this->xmin << ",y1:" << this->ymin
-                  << ",x2:" << this->xmax << ",y2:" << this->ymax << std::endl;
+                  << ",x2:" << this->xmax << ",y2:" << this->ymax
+                  << ",id:" << this->idx << ",score:" << this->score
+                  << std::endl;
         break;
     }
   }

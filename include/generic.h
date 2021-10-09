@@ -44,7 +44,8 @@
  *
  */
 
-using namespace std;
+using std::vector;
+using std::to_string;
 
 namespace thor {
 namespace generic {
@@ -72,8 +73,8 @@ class IndexSequence {
  public:
   IndexSequence(IntType b, IntType e) : begin_(b), end_(e) {}
 
-  auto begin() const { return begin_; }
-  auto end() const { return end_; }
+  IndexValueType<IntType> begin() const { return begin_; }
+  IndexValueType<IntType> end() const { return end_; }
 
  protected:
   IndexValueType<IntType> begin_;
@@ -81,7 +82,8 @@ class IndexSequence {
 };
 
 template <typename Container>
-auto IndexesOf(Container &&container) {
+auto IndexesOf(
+    Container &&container) {
   using IntType = decltype(container.size());
   return IndexSequence<IntType, ForwardIndexValue>(0, container.size());
 }

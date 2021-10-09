@@ -2,19 +2,10 @@
 // Created by JinTian on 02/01/2018.
 //
 
-
-
-#ifdef USE_EIGEN
-#ifdef USE_OPENCV
-
 #include "include/math.h"
-
-
-
 
 namespace thor {
 namespace math {
-
 
 double WrapAngle(const double angle) {
   const double new_angle = std::fmod(angle, M_PI * 2.0);
@@ -55,7 +46,7 @@ double RandomDouble(const double s, const double t, unsigned int rand_seed) {
 // Gaussian
 double Gaussian(const double u, const double std, const double x) {
   return (1.0 / std::sqrt(2 * M_PI * std * std)) *
-      std::exp(-(x - u) * (x - u) / (2 * std * std));
+         std::exp(-(x - u) * (x - u) / (2 * std * std));
 }
 
 // Sigmoid
@@ -70,6 +61,13 @@ void RotateAxis(const double theta, const double x0, const double y0,
   *x1 = x0 * cos_theta + y0 * sin_theta;
   *y1 = -x0 * sin_theta + y0 * cos_theta;
 }
+}  // namespace math
+}  // namespace thor
+
+#ifdef USE_EIGEN
+#ifdef USE_OPENCV
+namespace thor {
+namespace math {
 
 /**
  * n indicates how many terms in curve, more n, more accurate
@@ -78,15 +76,15 @@ void RotateAxis(const double theta, const double x0, const double y0,
  * @param A
  * @return
  */
-bool polynomial_curve_fit(std::vector<cv::Point> &key_point, int n,
+bool polynomial_curve_fit(std::vector<cv::Point> *key_point, int n,
                           cv::Mat &A) {
-  int N = key_point.size();
+  int N = key_point->size();
   cv::Mat X = cv::Mat::zeros(n + 1, n + 1, CV_64FC1);
   for (int i = 0; i < n + 1; i++) {
     for (int j = 0; j < n + 1; j++) {
       for (int k = 0; k < N; k++) {
         X.at<double>(i, j) =
-            X.at<double>(i, j) + std::pow(key_point[k].x, i + j);
+            X.at<double>(i, j) + std::pow(key_point->at(k).x, i + j);
       }
     }
   }
@@ -94,8 +92,8 @@ bool polynomial_curve_fit(std::vector<cv::Point> &key_point, int n,
   cv::Mat Y = cv::Mat::zeros(n + 1, 1, CV_64FC1);
   for (int i = 0; i < n + 1; i++) {
     for (int k = 0; k < N; k++) {
-      Y.at<double>(i, 0) =
-          Y.at<double>(i, 0) + std::pow(key_point[k].x, i) * key_point[k].y;
+      Y.at<double>(i, 0) = Y.at<double>(i, 0) +
+                           std::pow(key_point->at(k).x, i) * key_point->at(k).y;
     }
   }
 
@@ -104,13 +102,15 @@ bool polynomial_curve_fit(std::vector<cv::Point> &key_point, int n,
   return true;
 }
 
-bool ContinuousToDiscrete(
-    const Eigen::MatrixXd &m_a, const Eigen::MatrixXd &m_b,
-    const Eigen::MatrixXd &m_c, const Eigen::MatrixXd &m_d, const double ts,
-    Eigen::MatrixXd *ptr_a_d, Eigen::MatrixXd *ptr_b_d,
-    Eigen::MatrixXd *ptr_c_d, Eigen::MatrixXd *ptr_d_d) {
+bool ContinuousToDiscrete(const Eigen::MatrixXd &m_a,
+                          const Eigen::MatrixXd &m_b,
+                          const Eigen::MatrixXd &m_c,
+                          const Eigen::MatrixXd &m_d, const double ts,
+                          Eigen::MatrixXd *ptr_a_d, Eigen::MatrixXd *ptr_b_d,
+                          Eigen::MatrixXd *ptr_c_d, Eigen::MatrixXd *ptr_d_d) {
   if (ts <= 0.0) {
-    thor::log::LOG(ERROR) << "ContinuousToDiscrete : ts is less than or equal to zero";
+    thor::log::LOG(ERROR)
+        << "ContinuousToDiscrete : ts is less than or equal to zero";
     return false;
   }
 
@@ -137,15 +137,8 @@ bool ContinuousToDiscrete(
   return true;
 }
 
-
-
-}
-}
-
-
+}  // namespace math
+}  // namespace thor
 
 #endif
 #endif
-
-
-

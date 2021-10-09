@@ -18,5 +18,5 @@ message(STATUS "${Protobuf_LIBRARIES}")
 add_executable(thor_simple thor_simple.cpp)
 target_link_libraries(thor_simple thor ${Protobuf_LIBRARIES})
 
-add_executable(tests tests.cpp)
-target_link_libraries(tests thor ${Protobuf_LIBRARIES} ${OpenCV_LIBS})
+# add_executable(tests tests.cpp)
+# target_link_libraries(tests thor ${Protobuf_LIBRARY} ${OpenCV_LIBS})

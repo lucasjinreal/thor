@@ -1,6 +1,3 @@
-#ifndef THOR_DATUM_H_
-#define THOR_DATUM_H_
-
 /**
  *
  *
@@ -11,11 +8,10 @@
  * define a Vec2d is sometimes useful
  *
  * */
-
+#pragma once
 
 #ifdef USE_OPENCV
 #ifdef USE_EIGEN
-
 
 #include <iostream>
 #include <limits>
@@ -261,7 +257,3 @@ class Polygon2d {
 
 #endif
 #endif
-
-
-
-#endif //THOR_SRC_CV_EX_H_

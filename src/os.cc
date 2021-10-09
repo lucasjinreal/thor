@@ -41,7 +41,8 @@
 struct stat info;
 typedef struct stat Stat;
 
-using namespace std;
+using std::string;
+using std::vector;
 
 bool thor::os::exists(string path) {
   // if path exists, return true else return false
@@ -331,8 +332,9 @@ int thor::os::makedirs(string path, mode_t mode) {
       errno = ENOTDIR;
       std::cout << "path [" << newPath << "] not a dir " << std::endl;
       return -1;
-    } else
+    } else {
       std::cout << "path [" << newPath << "] already exists " << std::endl;
+    }
     iter = newIter;
     if (newIter != path.end()) ++iter;
   }
@@ -364,7 +366,8 @@ string thor::os::suffix(string path) {
 namespace thor {
 namespace os {
 
-string abs_path(const string &path) { cerr << "abs_path not implement yet."; }
+// string abs_path(const string &path) { cerr << "abs_path not implement yet.";
+// }
 
 std::string GetAbsolutePath(const std::string &prefix,
                             const std::string &relative_path) {
@@ -383,8 +386,6 @@ std::string GetAbsolutePath(const std::string &prefix,
 }
 
 std::vector<std::string> glob(const std::string &pattern) {
-  using namespace std;
-
   // glob struct resides on the stack
   glob_t glob_result;
   memset(&glob_result, 0, sizeof(glob_result));

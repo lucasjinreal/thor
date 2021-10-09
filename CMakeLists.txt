@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.5)
 project(thor VERSION 1.3.0 LANGUAGES CXX)
-set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_FLAGS  "-fPIC")
 
 
@@ -100,11 +100,11 @@ if (USE_PROTOBUF)
 endif ()
 
 
-message(STATUS "OpenCV: " ${USE_OPENCV})
-message(STATUS "Eigen: " ${USE_EIGEN})
-message(STATUS "Protobuf: " ${USE_PROTOBUF})
-message(STATUS "CV_EX: " ${USE_CV_EX})
-message(STATUS "CURL: " ${USE_CURL})
+message(STATUS "USE_OPENCV: " ${USE_OPENCV})
+message(STATUS "USE_EIGEN: " ${USE_EIGEN})
+message(STATUS "USE_PROTOBUF: " ${USE_PROTOBUF})
+message(STATUS "USE_CV_EX: " ${USE_CV_EX})
+message(STATUS "USE_CURL: " ${USE_CURL})
 message(STATUS "BUILD_STATIC: " ${BUILD_STATIC})
 
 

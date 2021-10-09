@@ -23,20 +23,20 @@
  */
 
 #include <zconf.h>
-#include <iostream>
+
 #include <fstream>
+#include <iostream>
+
+#include "opencv4/opencv2/opencv.hpp"
+#include "thor/det.pb.h"
+#include "thor/dl.h"
+#include "thor/functions.h"
+#include "thor/insg.pb.h"
 #include "thor/logging.h"
 #include "thor/macro.h"
 #include "thor/os.h"
 #include "thor/timer.h"
-#include "thor/functions.h"
-
-#include "thor/det.pb.h"
-#include "thor/insg.pb.h"
 #include "thor/vis.h"
-#include "thor/dl.h"
-
-#include "opencv4/opencv2/opencv.hpp"
 
 using namespace std;
 using namespace thor::log;
@@ -45,48 +45,44 @@ using namespace thor::vis::color;
 
 const int kMaskSize = 28;
 
-
-
-
-
 int main(int argc, char** argv) {
-    string pb_file = argv[1];
-    string img_file = argv[2];
+  string pb_file = argv[1];
+  string img_file = argv[2];
 
-    LOG(INFO) << pb_file;
-    LOG(INFO) << img_file;
+  LOG(INFO) << pb_file;
+  LOG(INFO) << img_file;
 
-    // read proto checkout the content
-    FramePossession frame_possession;
-    ifstream file(pb_file, ios::in | ios::binary);
+  // read proto checkout the content
+  FramePossession frame_possession;
+  ifstream file(pb_file, ios::in | ios::binary);
 
-    if (file.is_open())
-    {
-        if (!frame_possession.ParseFromIstream(&file))
-        {
-            printf("Failed to parse TextureAtlasEntry");
-        }
+  if (file.is_open()) {
+    if (!frame_possession.ParseFromIstream(&file)) {
+      printf("Failed to parse TextureAtlasEntry");
     }
-    LOG(INFO) << frame_possession.DebugString();
+  }
+  LOG(INFO) << frame_possession.DebugString();
 
-    // visualize the instance inside possession
-    vector<InstanceSegmentation> all_instances;
-//    *frame_possession.mutable_instances() = {all_instances.begin(), all_instances.end()};
-    for(auto ins: frame_possession.instances()) {
-        all_instances.emplace_back(ins);
-    }
+  // visualize the instance inside possession
+  vector<InstanceSegmentation> all_instances;
+  //    *frame_possession.mutable_instances() = {all_instances.begin(),
+  //    all_instances.end()};
+  for (auto ins : frame_possession.instances()) {
+    all_instances.emplace_back(ins);
+  }
 
-    LOG(INFO) << all_instances.size();
+  LOG(INFO) << all_instances.size();
 
-    cv::Mat img = cv::imread(img_file);
-    LOG(INFO) << "img data type: " << img.type();
-    // auto res = thor::vis::VisualizeInstanceSegmentations(img, all_instances, thor::dl::COCO_CLASSES);
-    cv::imshow("aa", img);
-    // cv::imshow("res", res);
-    cv::waitKey(0);
+  cv::Mat img = cv::imread(img_file);
+  LOG(INFO) << "img data type: " << img.type();
+  // auto res = thor::vis::VisualizeInstanceSegmentations(img, all_instances,
+  // thor::dl::COCO_CLASSES);
+  cv::imshow("aa", img);
+  // cv::imshow("res", res);
+  cv::waitKey(0);
 
-    cv::Scalar c = thor::vis::toCvColor(thor::vis::color::kAliceBlue);
-    LOG(INFO) << c;
+  cv::Scalar c = thor::vis::toCvColor(thor::vis::color::kAliceBlue);
+  LOG(INFO) << c;
 
-    google::protobuf::ShutdownProtobufLibrary();
+  google::protobuf::ShutdownProtobufLibrary();
 }
