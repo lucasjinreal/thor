@@ -64,7 +64,10 @@ endif ()
 
 if (USE_PROTOBUF)
     find_package(Protobuf REQUIRED)
+    # NOTE: change to your REAL libprotobuf path
+    # set(PROTOBUF_LIBRARIES "/usr/lib/libprotobuf.so")
     message(STATUS " protoc: " ${PROTOBUF_PROTOC_EXECUTE_VERSION} " libprotobuf: " ${Protobuf_VERSION})
+    message(STATUS "${Protobuf_LIBRARIES}")
     if (NOT PROTOBUF_FOUND)
         set(USE_PROTOBUF OFF)
         message(STATUS "protobuf not found, turned it off.")
@@ -119,8 +122,8 @@ if (USE_OPENCV)
 endif ()
 
 if (USE_PROTOBUF)
-    # target_link_libraries(thor ${PROTOBUF_LIBRARIES})
-    target_link_libraries(thor /usr/lib/x86_64-linux-gnu/libprotobuf.so)
+    target_link_libraries(thor ${PROTOBUF_LIBRARIES})
+    # target_link_libraries(thor /usr/lib/x86_64-linux-gnu/libprotobuf.so)
     # uncomment this if you are on arm such as JetsonNano or TX2
     # target_link_libraries(thor /usr/lib/aarch64-linux-gnu/libprotobuf.so)
 endif ()

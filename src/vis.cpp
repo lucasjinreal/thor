@@ -481,10 +481,10 @@ cv::Mat VisualizeDetectionsWithOverrideColors(
     cv::Mat &img, vector<thor::Detection> detections,
     const vector<string> classes_names,
     const std::map<int, cv::Scalar> *override_colors,
-    const float line_thickness, const float font_scale, const bool fancy,
-    const float confidence_threshold, const bool enable_mask,
+    const float line_thickness, const bool with_text, const float font_scale,
+    const bool fancy, const float confidence_threshold, const bool enable_mask,
     const bool normalized) {
-  const int font = cv::FONT_HERSHEY_SIMPLEX;
+  const int font = cv::FONT_HERSHEY_COMPLEX;
   const int font_thickness = 1;
 
   cv::Mat mask = cv::Mat::zeros(img.size(), CV_8UC3);
@@ -531,8 +531,10 @@ cv::Mat VisualizeDetectionsWithOverrideColors(
       cv::rectangle(
           mask, cv::Point(pt1.x, text_origin.y - text_size.height - base_line),
           cv::Point(text_origin.x + text_size.width + 2, pt1.y), u_c, -1, 0);
-      cv::putText(img, label_text, text_origin, font, font_scale,
-                  cv::Scalar(255, 255, 255), font_thickness, cv::LINE_AA);
+      if (with_text) {
+        cv::putText(img, label_text, text_origin, font, font_scale,
+                    cv::Scalar(255, 255, 255), font_thickness, cv::LINE_AA);
+      }
     }
   }
 

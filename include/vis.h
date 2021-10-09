@@ -124,22 +124,20 @@ cv::Mat VisualizeDetectionsWithOverrideColors(
     cv::Mat &img, vector<thor::Detection> detections,
     const vector<string> classes_names,
     const std::map<int, cv::Scalar> *override_colors = NULL,
-    const float line_thickness = 1, const float font_scale = 0.38,
-    const bool fancy = false, const float confidence_threshold = 0.02,
-    const bool enable_mask = false, const bool normalized = false);
+    const float line_thickness = 1, const bool with_text = true,
+    const float font_scale = 0.38, const bool fancy = false,
+    const float confidence_threshold = 0.02, const bool enable_mask = false,
+    const bool normalized = false);
 
 ///////////////////// Visualize protobuf messages ///////////////////////
 
 #ifdef USE_PROTOBUF
-    cv::Mat
-    VisualizeDetections(cv::Mat &img, vector<thor::dl::Detection2D> detections,
-                        const vector<string> classes_names,
-                        const vector<cv::Scalar> *colors = NULL,
-                        const float line_thickness = 1.7,
-                        const float font_scale = 0.3, const bool fancy = false,
-                        const float confidence_threshold = 0.02,
-                        const bool enable_mask = false,
-                        const bool normalized = false);
+cv::Mat VisualizeDetections(
+    cv::Mat &img, vector<thor::dl::Detection2D> detections,
+    const vector<string> classes_names, const vector<cv::Scalar> *colors = NULL,
+    const float line_thickness = 1.7, const float font_scale = 0.3,
+    const bool fancy = false, const float confidence_threshold = 0.02,
+    const bool enable_mask = false, const bool normalized = false);
 
 cv::Mat VisualizeInstanceSegmentations(
     cv::Mat &img, vector<thor::dl::InstanceSegmentation> instances,
