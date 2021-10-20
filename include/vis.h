@@ -25,8 +25,7 @@
 // Created by jintian on 18-1-12.
 //
 
-#ifndef CAO_VIS_H
-#define CAO_VIS_H
+#pragma once
 
 /**
  *  Vision module in cao
@@ -48,12 +47,9 @@
 #include "proto/insg.pb.h"
 #include "structures.h"
 
-//#ifdef USE_OPENCV
+#ifdef USE_OPENCV
 #include "opencv2/core.hpp"
 #include "opencv2/imgproc.hpp"
-
-using namespace cv;
-//#endif
 
 namespace thor {
 namespace vis {
@@ -131,15 +127,12 @@ cv::Mat VisualizeDetectionsWithOverrideColors(
 ///////////////////// Visualize protobuf messages ///////////////////////
 
 #ifdef USE_PROTOBUF
-    cv::Mat
-    VisualizeDetections(cv::Mat &img, vector<thor::dl::Detection2D> detections,
-                        const vector<string> classes_names,
-                        const vector<cv::Scalar> *colors = NULL,
-                        const float line_thickness = 1.7,
-                        const float font_scale = 0.3, const bool fancy = false,
-                        const float confidence_threshold = 0.02,
-                        const bool enable_mask = false,
-                        const bool normalized = false);
+cv::Mat VisualizeDetections(
+    cv::Mat &img, vector<thor::dl::Detection2D> detections,
+    const vector<string> classes_names, const vector<cv::Scalar> *colors = NULL,
+    const float line_thickness = 1.7, const float font_scale = 0.3,
+    const bool fancy = false, const float confidence_threshold = 0.02,
+    const bool enable_mask = false, const bool normalized = false);
 
 cv::Mat VisualizeInstanceSegmentations(
     cv::Mat &img, vector<thor::dl::InstanceSegmentation> instances,
@@ -1083,4 +1076,4 @@ const int kColorPlanOldCaffe[] = {
 }  // namespace vis
 }  // namespace thor
 
-#endif  // CAO_VIS_H
+#endif

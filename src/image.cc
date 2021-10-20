@@ -139,4 +139,35 @@ cv::Mat resizeAlongShortest(cv::Mat img, int target_w, int target_h) {
 }
 
 }  // namespace image
+
+namespace iter {
+
+template <class Item>
+ImageSourceIter<Item>::ImageSourceIter(string source) {
+  // judge if this is directory, image file, or video file
+  if (thor::os::isfile(source)) {
+    // judge if it's video or image file
+    if (thor::os::suffix(source) == "mp4") {
+      is_video_mode = true;
+
+    } else {
+      cv::Mat itm = cv::imread(source);
+      item_pool.push_back(itm);
+    }
+  } else if (thor::os::isdir(source)) {
+  }
+}
+
+template <class Item>
+Item *next() {
+  if (crt > item_pool.size()) {
+    return NULL
+  } else {
+    Item a = item_pool[crt];
+    crt += 1;
+    return &a;
+  }
+}
+}  // namespace iter
+
 }  // namespace thor
