@@ -147,25 +147,40 @@ ImageSourceIter<Item>::ImageSourceIter(string source) {
   // judge if this is directory, image file, or video file
   if (thor::os::isfile(source)) {
     // judge if it's video or image file
-    if (thor::os::suffix(source) == "mp4") {
-      is_video_mode = true;
-
+    if (thor::os::suffix(source) == "mp4" ||
+        thor::os::suffix(source) == "avi") {
+      this->is_video_mode = true;
+      auto res = this->cap.open(source);
+      if (!res) {
+        std::cerr << "open video error! " << source << std::endl;
+      }
     } else {
       cv::Mat itm = cv::imread(source);
-      item_pool.push_back(itm);
+      this->item_pool.push_back(itm);
     }
   } else if (thor::os::isdir(source)) {
   }
 }
 
 template <class Item>
-Item *next() {
-  if (crt > item_pool.size()) {
-    return NULL
-  } else {
-    Item a = item_pool[crt];
-    crt += 1;
+ImageSourceIter<Item>::~ImageSourceIter() {
+  this->cap.release();
+}
+
+template <class Item>
+Item *ImageSourceIter<Item>::next() {
+  if (this->is_video_mode) {
+    cv::Mat a;
+    this->cap >> a;
     return &a;
+  } else {
+    if (this->crt > this->item_pool.size()) {
+      return NULL;
+    } else {
+      Item a = this->item_pool[this->crt];
+      this->crt += 1;
+      return &a;
+    }
   }
 }
 }  // namespace iter

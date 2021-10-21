@@ -26,9 +26,15 @@
 #include <opencv2/core/mat.hpp>
 #include <string>
 #include <vector>
-#include "os.h"
-#include "opencv2/imgproc.hpp"
 
+#include "opencv2/imgproc.hpp"
+#include "opencv2/video.hpp"
+#include "opencv2/videoio.hpp"
+#include "opencv2/opencv.hpp"
+#include "os.h"
+
+using cv::imread;
+using cv::VideoCapture;
 using std::string;
 using std::vector;
 
@@ -70,15 +76,17 @@ class SourceIterator {
   // members
   std::vector<Item> item_pool;
   bool is_video_mode;
-  int cur;
+  int crt;
   cv::VideoCapture cap;
 };
 
 template <class Item>
-class ImageSourceIter : SourceIterator {
+class ImageSourceIter : public SourceIterator<Item> {
  public:
   explicit ImageSourceIter(std::string source);
-  void next();
+  ~ImageSourceIter();
+
+  Item* next();
 };
 }  // namespace iter
 

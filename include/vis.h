@@ -43,13 +43,16 @@
 #include <vector>
 
 #include "cmath"
+#include "opencv2/core.hpp"
+#include "opencv2/imgproc.hpp"
+#include "opencv2/opencv.hpp"
 #include "proto/det.pb.h"
 #include "proto/insg.pb.h"
 #include "structures.h"
 
-#ifdef USE_OPENCV
-#include "opencv2/core.hpp"
-#include "opencv2/imgproc.hpp"
+using cv::Mat;
+using cv::Point2f;
+using cv::Scalar;
 
 namespace thor {
 namespace vis {
@@ -1075,5 +1078,3 @@ const int kColorPlanOldCaffe[] = {
 
 }  // namespace vis
 }  // namespace thor
-
-#endif

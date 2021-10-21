@@ -261,7 +261,7 @@ void renderHumanPose(std::vector<HumanPose> &poses, cv::Mat &image) {
       // we draw this id
       Box b = pose.to_box();
       cv::putText(image, to_string(pose.pose_id), Point2f(b.xmin, b.ymin),
-                  FONT_HERSHEY_COMPLEX, 0.5, Scalar(255, 0, 255));
+                  cv::FONT_HERSHEY_COMPLEX, 0.5, Scalar(255, 0, 255));
       cv::rectangle(image, Point2f(b.xmin, b.ymin), Point2f(b.xmax, b.ymax),
                     Scalar(255, 0, 0), 1);
     }
@@ -293,7 +293,7 @@ void renderHumanPoseSimple(std::vector<HumanPose> &poses, cv::Mat &image) {
       // we draw this id
       Box b = pose.to_box();
       cv::putText(image, to_string(pose.pose_id), Point2f(b.xmin, b.ymin),
-                  FONT_HERSHEY_COMPLEX, 0.5, Scalar(255, 255, 255));
+                  cv::FONT_HERSHEY_COMPLEX, 0.5, Scalar(255, 255, 255));
       cv::rectangle(image, Point2f(b.xmin, b.ymin), Point2f(b.xmax, b.ymax),
                     Scalar(255, 255, 255), 1);
     }
@@ -661,8 +661,8 @@ cv::Mat VisualizeInstanceSegmentations(
     vector<Mat> contours;
     Mat hierarchy;
     mask.convertTo(mask, CV_8U);
-    findContours(mask, contours, hierarchy, RETR_CCOMP, CHAIN_APPROX_SIMPLE);
-    drawContours(coloredRoi, contours, -1, color, 5, LINE_8, hierarchy, 100);
+    findContours(mask, contours, hierarchy, cv::RETR_CCOMP, cv::CHAIN_APPROX_SIMPLE);
+    drawContours(coloredRoi, contours, -1, color, 5, cv::LINE_8, hierarchy, 100);
     coloredRoi.copyTo(img(box), mask);
   }
   return img;
