@@ -35,12 +35,14 @@
 #include "thor/os.h"
 #include "thor/tar.h"
 #include "thor/timer.h"
+#include "thor/image.h"
 
 using std::cout;
 using std::endl;
 using std::ifstream;
 using std::iostream;
 using std::vector;
+using thor::iter::ImageSourceIter;
 
 using namespace thor::log;
 using namespace thor::dl;
@@ -86,8 +88,6 @@ int main() {
     LOG(INFO) << i << " " << cls_i;
     LOG(INFO) << "at: " << i;
     if (score_i > 0.2) {
-      //            InstanceSegmentation *one_ins =
-      //            frame_possession.add_instances();
       Detection2D one_det;
       Box one_box;
       one_box.set_x1(123);
@@ -97,14 +97,7 @@ int main() {
       one_det.mutable_box()->CopyFrom(one_box);
       one_det.set_prob(static_cast<double>(score_i));
       one_det.set_cls_id(cls_i);
-      //            one_ins->set_allocated_detection(&one_det);
-      //            one_ins->add_mask(0.5);
-      //            one_ins->add_mask(0.6);
-
       LOG(INFO) << "cc";
-      // add mask to one_ins
-      //            LOG(INFO) << one_ins->DebugString();
-      //            LOG(INFO) << frame_possession.DebugString();
     }
   }
   LOG(INFO) << frame_possession.DebugString();
@@ -121,4 +114,14 @@ int main() {
   for (auto a : ns) {
     cout << a << endl;
   }
+
+
+  PRINT_GREEN("5. test ImageSourceIter.");
+  ImageSourceIter<cv::Mat> sourceIter("");
+  while (1) {
+    auto itm = sourceIter.next();
+    // do with itm
+    
+  }
+
 }
