@@ -139,4 +139,50 @@ cv::Mat resizeAlongShortest(cv::Mat img, int target_w, int target_h) {
 }
 
 }  // namespace image
+
+namespace iter {
+
+template <class Item>
+ImageSourceIter<Item>::ImageSourceIter(string source) {
+  // judge if this is directory, image file, or video file
+  if (thor::os::isfile(source)) {
+    // judge if it's video or image file
+    if (thor::os::suffix(source) == "mp4" ||
+        thor::os::suffix(source) == "avi") {
+      this->is_video_mode = true;
+      auto res = this->cap.open(source);
+      if (!res) {
+        std::cerr << "open video error! " << source << std::endl;
+      }
+    } else {
+      cv::Mat itm = cv::imread(source);
+      this->item_pool.push_back(itm);
+    }
+  } else if (thor::os::isdir(source)) {
+  }
+}
+
+template <class Item>
+ImageSourceIter<Item>::~ImageSourceIter() {
+  this->cap.release();
+}
+
+template <class Item>
+Item *ImageSourceIter<Item>::next() {
+  if (this->is_video_mode) {
+    cv::Mat a;
+    this->cap >> a;
+    return &a;
+  } else {
+    if (this->crt > this->item_pool.size()) {
+      return NULL;
+    } else {
+      Item a = this->item_pool[this->crt];
+      this->crt += 1;
+      return &a;
+    }
+  }
+}
+}  // namespace iter
+
 }  // namespace thor
