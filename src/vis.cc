@@ -722,6 +722,56 @@ cv::Mat VisualizeDetectionStyleDetectron2(
   return combined;
 }
 
+cv::Mat VisualizeDetectionStyleDetectron2(
+    cv::Mat &img, vector<thor::Bbox> detections, vector<string> classes_names,
+    bool enable_mask, float confidence_threshold, bool normalized) {
+  // for detectron2 style drawing bounding boxes
+  const int font = cv::FONT_HERSHEY_SIMPLEX;
+  const float font_scale = 0.35;
+  const int font_thickness = 1;
+  cv::Mat mask = cv::Mat::zeros(img.size(), CV_8UC3);
+  for (int i = 0; i < detections.size(); ++i) {
+    thor::Bbox box = detections[i];
+    const float score = box.score;
+    if (score >= confidence_threshold) {
+      cv::Point pt1, pt2;
+      if (normalized) {
+        pt1.x = (img.cols * box.xmin);
+        pt1.y = (img.rows * box.ymin);
+        pt2.x = (img.cols * box.xmax);
+        pt2.y = (img.rows * box.ymax);
+      } else {
+        pt1.x = box.xmin;
+        pt1.y = box.ymin;
+        pt2.x = box.xmax;
+        pt2.y = box.ymax;
+      }
+
+      cv::Scalar u_c = thor::vis::gen_unique_color_cv(box.cid);
+      cv::rectangle(img, pt1, pt2, u_c, 1, 8, 0);
+      cv::rectangle(mask, pt1, pt2, u_c, cv::FILLED, 0);
+
+      char score_str[256];
+      sprintf(score_str, "%.1f", score);
+      std::string label_text = classes_names[box.cid] + ":" + string(score_str);
+      int base_line = 0;
+      cv::Point text_origin = cv::Point(pt1.x, pt1.y - 2);
+      cv::Size text_size = cv::getTextSize(label_text, font, font_scale,
+                                           font_thickness, &base_line);
+      cv::rectangle(img, cv::Point(text_origin.x, text_origin.y),
+                    cv::Point(text_origin.x + text_size.width,
+                              text_origin.y - text_size.height),
+                    cv::Scalar(0, 0, 0), -1, 0);
+      cv::putText(img, label_text, text_origin, font, font_scale,
+                  cv::Scalar(255, 255, 255), font_thickness);
+    }
+  }
+  cv::Mat combined;
+  cv::addWeighted(img, 0.8, mask, 0.6, 0.6, combined);
+  // maybe combine a mask img back later
+  return combined;
+}
+
 /////////////////////////// Visualize Lanes ////////////////////
 cv::Mat VisualizeLanes(cv::Mat &img, const vector<vector<cv::Point>> &lanes,
                        const vector<cv::Scalar> *colors,

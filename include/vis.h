@@ -111,6 +111,13 @@ cv::Mat VisualizeDetectionStyleDetectron2(cv::Mat &img,
                                           float confidence_threshold = 0.02,
                                           bool normalized = false);
 
+cv::Mat VisualizeDetectionStyleDetectron2(cv::Mat &img,
+                                          vector<thor::Bbox> detections,
+                                          vector<string> classes_names,
+                                          bool enable_mask = true,
+                                          float confidence_threshold = 0.02,
+                                          bool normalized = false);
+
 // More modern API which same as alfred
 cv::Mat VisualizeDetections(
     cv::Mat &img, vector<thor::Detection> detections,
