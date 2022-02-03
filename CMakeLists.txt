@@ -72,6 +72,7 @@ if (USE_PROTOBUF)
         set(USE_PROTOBUF OFF)
         message(STATUS "protobuf not found, turned it off.")
     else ()
+        include_directories(${Protobuf_INCLUDE_DIRS})
         set(protobuf_MODULE_COMPATIBLE ON CACHE BOOL "")
         add_definitions(-DUSE_PROTOBUF)
 

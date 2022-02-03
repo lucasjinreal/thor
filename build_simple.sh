@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/bin/sh
 ##
 ## Copyright (c) 2020 Fagang Jin.
 ##
@@ -23,11 +23,38 @@
 ## under the License.
 ##
 
-sudo apt install -y libfreetype6-dev
-sudo apt install -y libcurl4-openssl-dev
-sudo apt install -y libeigen3-dev
-sudo apt-get install -y libprotobuf-dev
-sudo apt install -y protobuf-compiler
+case "$(uname -s)" in
+
+Darwin)
+    echo 'macOS'
+    rm include/proto/*.pb.cc
+    rm include/proto/*.pb.h
+    # brew install protobuf
+
+    ;;
+
+Linux)
+    echo 'Linux'
+    rm include/proto/*.pb.cc
+    rm include/proto/*.pb.h
+
+    sudo apt install -y libfreetype6-dev
+    sudo apt install -y libcurl4-openssl-dev
+    sudo apt install -y libeigen3-dev
+    sudo apt-get install -y libprotobuf-dev
+    sudo apt install -y protobuf-compiler
+    ;;
+
+CYGWIN* | MINGW32* | MSYS* | MINGW*)
+    echo 'MS Windows'
+    ;;
+
+# Add here more strings to compare
+# See correspondence table at the bottom of this answer
+*)
+    echo 'Other OS, this might not supported, if you got issues, fire it on github.'
+    ;;
+esac
 
 mkdir build
 cd build
