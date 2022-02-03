@@ -30,6 +30,7 @@
 namespace thor {
 namespace dl {
 
+#ifdef USE_PROTOBUF
 bool ClassAgnosticNonMaximumSuppression(const std::vector<Detection2D> &input,
                                         const double nms_threshold,
                                         std::vector<Detection2D> *output) {
@@ -105,6 +106,7 @@ bool ClassAgnosticNonMaximumSuppression(
 
   return true;
 }
+#endif
 
 }  // namespace dl
 }  // namespace thor

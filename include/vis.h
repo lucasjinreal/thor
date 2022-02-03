@@ -46,9 +46,12 @@
 #include "opencv2/core.hpp"
 #include "opencv2/imgproc.hpp"
 #include "opencv2/opencv.hpp"
+#include "structures.h"
+
+#ifdef USE_PROTOBUF
 #include "proto/det.pb.h"
 #include "proto/insg.pb.h"
-#include "structures.h"
+#endif
 
 using cv::Mat;
 using cv::Point2f;

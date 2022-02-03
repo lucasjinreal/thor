@@ -38,16 +38,22 @@
 #include "generic.h"
 #include "iostream"
 #include "numeric"
-#include "proto/det.pb.h"
 #include "string"
 #include "structures.h"
 #include "vector"
+
+#ifdef USE_PROTOBUF
+#include "proto/det.pb.h"
+#endif
 
 namespace thor {
 namespace dl {
 
 using std::vector;
+
+#ifdef USE_PROTOBUF
 using thor::dl::Detection2D;
+#endif
 
 // add several CLASSES here
 vector<string> VOC_CLASSES = {"__background__",
@@ -189,6 +195,7 @@ vector<string> COCO_CLASSES_NO_BK = {
     "vase",          "scissors",     "teddy bear",
     "hair drier",    "toothbrush"};
 
+#ifdef USE_PROTOBUF
 bool ClassAgnosticNonMaximumSuppression(const std::vector<Detection2D> &input,
                                         const double nms_threshold,
                                         std::vector<Detection2D> *output);
@@ -196,6 +203,7 @@ bool ClassAgnosticNonMaximumSuppression(const std::vector<Detection2D> &input,
 bool ClassAgnosticNonMaximumSuppression(const std::vector<Detection2D> &input,
                                         const double nms_threshold,
                                         std::vector<bool> *mask);
+#endif
 
 }  // namespace dl
 }  // namespace thor

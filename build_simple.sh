@@ -58,7 +58,8 @@ esac
 
 mkdir build
 cd build
-cmake -DUSE_PROTOBUF=ON ..
+# cmake -DUSE_PROTOBUF=ON ..
+cmake -DUSE_PROTOBUF=OFF ..
 make -j2
 sudo make install
 
