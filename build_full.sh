@@ -32,6 +32,8 @@ sudo apt-get install -y libprotobuf-dev
 sudo apt install -y protobuf-compiler
 
 
+rm -r build/ > /dev/null
+
 sudo chmod -R 777 *
 if [ "$(uname)" == "Darwin" ]; then
     # Do something under Mac OS X platform
