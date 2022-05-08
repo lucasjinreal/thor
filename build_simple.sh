@@ -56,6 +56,7 @@ CYGWIN* | MINGW32* | MSYS* | MINGW*)
     ;;
 esac
 
+rm -r build/ > /dev/null
 mkdir build
 cd build
 # cmake -DUSE_PROTOBUF=ON ..
