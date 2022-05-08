@@ -24,7 +24,7 @@
 #include <cstdio>
 #include <queue>
 
-#include "include/graph.h"
+#include "thor/graph.h"
 
 namespace thor {
 namespace graph {

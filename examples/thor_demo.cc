@@ -27,15 +27,13 @@
 #include <fstream>
 #include <iostream>
 
-#include "thor/det.pb.h"
 #include "thor/functions.h"
-#include "thor/insg.pb.h"
+#include "thor/image.h"
 #include "thor/logging.h"
 #include "thor/macro.h"
 #include "thor/os.h"
 #include "thor/tar.h"
 #include "thor/timer.h"
-#include "thor/image.h"
 
 using std::cout;
 using std::endl;
@@ -45,7 +43,6 @@ using std::vector;
 using thor::iter::ImageSourceIter;
 
 using namespace thor::log;
-using namespace thor::dl;
 
 int main() {
   PRINT_BLUE("HELLO, we are testing some basic function in thor...");
@@ -79,29 +76,6 @@ int main() {
   thor::functions::softmax_1d(values, probs, 2);
   LOG(INFO) << probs[0] << " " << probs[1];
 
-  PRINT_GREEN("4. test protos.");
-  FramePossession frame_possession;
-  for (int i = 0; i < 100; ++i) {
-    float score_i = 0.9;
-    LOG(INFO) << i << " " << score_i;
-    int cls_i = 5;
-    LOG(INFO) << i << " " << cls_i;
-    LOG(INFO) << "at: " << i;
-    if (score_i > 0.2) {
-      Detection2D one_det;
-      Box one_box;
-      one_box.set_x1(123);
-      one_box.set_y1(88);
-      one_box.set_x2(278);
-      one_box.set_y2(190);
-      one_det.mutable_box()->CopyFrom(one_box);
-      one_det.set_prob(static_cast<double>(score_i));
-      one_det.set_cls_id(cls_i);
-      LOG(INFO) << "cc";
-    }
-  }
-  LOG(INFO) << frame_possession.DebugString();
-
   PRINT_GREEN("4. test tar.");
   TarFile tr("../test.tar");
   bool is_valid_tar_file = tr.IsValidTarFile();
@@ -115,13 +89,10 @@ int main() {
     cout << a << endl;
   }
 
-
   PRINT_GREEN("5. test ImageSourceIter.");
   ImageSourceIter<cv::Mat> sourceIter("");
   while (1) {
     auto itm = sourceIter.next();
     // do with itm
-    
   }
-
 }

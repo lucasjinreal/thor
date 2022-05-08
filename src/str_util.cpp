@@ -29,7 +29,7 @@
 
 #include <algorithm>
 #include <cstring>
-#include "include/str_util.h"
+#include "thor/str_util.h"
 
 using namespace std;
 

@@ -35,7 +35,7 @@
 
 #ifdef USE_CURL
 
-#include "../include/app_license.h"
+#include "thor/app_license.h"
 
 thor::security::LicenseChecker::LicenseChecker()
 {

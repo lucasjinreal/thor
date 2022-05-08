@@ -26,17 +26,17 @@
 //
 // this library provider some function to
 // judge a directory is exist or not
-#include "include/os.h"
+#include "thor/os.h"
 
 #include <dirent.h>
-#include <include/logging.h>
+#include <thor/logging.h>
 
 #include <iostream>
 #include <string>
 #include <valarray>
 #include <vector>
 
-#include "include/str_util.h"
+#include "thor/str_util.h"
 
 struct stat info;
 typedef struct stat Stat;

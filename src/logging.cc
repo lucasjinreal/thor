@@ -22,7 +22,7 @@
  * under the License.
  */
 
-#include "../include/logging.h"
+#include "thor/logging.h"
 
 namespace thor {
 

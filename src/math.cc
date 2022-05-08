@@ -2,7 +2,7 @@
 // Created by JinTian on 02/01/2018.
 //
 
-#include "include/math.h"
+#include "thor/math.h"
 
 namespace thor {
 namespace math {

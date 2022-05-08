@@ -26,7 +26,7 @@
 // Created by jintian on 18-1-12.
 //
 
-#include "include/vis.h"
+#include "thor/vis.h"
 
 thor::vis::RGBA thor::vis::gen_unique_color(int idx, bool is_track,
                                             double hue_step, float alpha) {

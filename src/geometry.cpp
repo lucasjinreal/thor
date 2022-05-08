@@ -26,7 +26,7 @@
 //
 
 #ifdef USE_EIGEN
-#include "include/geometry.h"
+#include "thor/geometry.h"
 
 
 Eigen::Matrix3d thor::geometry::Quaternion2RotationMatrix(const double x,

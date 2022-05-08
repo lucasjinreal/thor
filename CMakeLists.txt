@@ -18,6 +18,12 @@ if (WIN32)
 endif ()
 
 include(GNUInstallDirs)
+include_directories(${PROJECT_SOURCE_DIR}/include/)
+
+if (APPLE)
+    # for mac M1 
+    include_directories(/opt/homebrew/include/)
+endif()
 
 if (USE_CV_EX)
     include_directories(/usr/include/freetype2/)
@@ -28,7 +34,6 @@ if (USE_EIGEN)
     include_directories(/usr/include/eigen3)
     add_definitions(-DUSE_EIGEN)
 endif ()
-
 
 if (USE_OPENCV)
     find_package(OpenCV 4.0 REQUIRED)
@@ -46,7 +51,6 @@ if (USE_OPENCV)
         message(STATUS "Can not found OpenCV, turned it off.")
     endif ()
 endif ()
-
 
 if (USE_CURL)
     find_package(CURL REQUIRED)
@@ -100,7 +104,6 @@ if (USE_PROTOBUF)
     endif ()
 endif ()
 
-
 message(STATUS "USE_OPENCV: " ${USE_OPENCV})
 message(STATUS "USE_EIGEN: " ${USE_EIGEN})
 message(STATUS "USE_PROTOBUF: " ${USE_PROTOBUF})
@@ -108,11 +111,10 @@ message(STATUS "USE_CV_EX: " ${USE_CV_EX})
 message(STATUS "USE_CURL: " ${USE_CURL})
 message(STATUS "BUILD_STATIC: " ${BUILD_STATIC})
 
-
 file(GLOB_RECURSE thor_SRCS "src/*.cpp" "src/*.cc" "include/proto/*.cc")
-file(GLOB_RECURSE thor_HEADERS "include/*.h" "include/*.hpp" "include/proto/*.h")
+file(GLOB_RECURSE thor_HEADERS "include/*.h" "include/*.hpp" "include/thor/proto/*.h")
 
-add_library(thor SHARED ${thor_SRCS} ${thor_HEADERS} include/utils.h)
+add_library(thor SHARED ${thor_SRCS} ${thor_HEADERS})
 if (BUILD_STATIC)
     add_library(thor_static STATIC ${thor_SRCS} ${thor_HEADERS})
 endif()
@@ -133,9 +135,6 @@ if (USE_CURL)
     target_link_libraries(thor ${CURL_LIBRARIES})
 endif ()
 
-
-
-
 set_target_properties(
         thor
         PROPERTIES
@@ -149,23 +148,20 @@ set_target_properties(
         PUBLIC_HEADER "${thor_HEADERS}")
         target_include_directories(thor_static PRIVATE .)
 endif()
-
-
 configure_file(thor.pc thor.pc @ONLY)
 
+add_subdirectory(examples)
 
 install(TARGETS thor
         ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
         LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
         PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/thor)
-
 if (BUILD_STATIC)
 install(TARGETS thor_static
         ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
         LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
         PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/thor)
 endif()
-
 message(STATUS "Proto headers: " ${PROTO_HDRS})
 install(FILES ${PROTO_HDRS} DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/thor/proto)
 install(FILES include/thor.pc

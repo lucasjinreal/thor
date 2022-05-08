@@ -31,7 +31,7 @@
 #include <stdexcept>
 
 #include "time.h"
-#include "include/random.h"
+#include "thor/random.h"
 
 using namespace std;
 

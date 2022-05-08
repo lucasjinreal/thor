@@ -29,7 +29,7 @@
  *
  * */
 
-#include "include/hungarian.h"
+#include "thor/hungarian.h"
 
 #include <iostream>
 

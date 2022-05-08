@@ -21,7 +21,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-#include "include/tar.h"
+#include "thor/tar.h"
 
 TarFile::TarFile(const char* tar_name) : file(nullptr), size(0) {
   file_names.clear();

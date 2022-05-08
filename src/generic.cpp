@@ -25,7 +25,7 @@
 // Created by jintian on 19-5-23.
 //
 
-#include "include/generic.h"
+#include "thor/generic.h"
 
 namespace thor {
 namespace generic {

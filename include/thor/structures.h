@@ -28,12 +28,11 @@
 
 #include "iostream"
 
-//#ifdef USE_OPENCV
-// #ifndef USE_OPENCV4
-// #include "opencv/cv.hpp"
-// #endif
-#include "opencv2/opencv.hpp"
-//#endif
+#ifdef __APPLE__
+#include "opencv4/opencv2/core.hpp"
+#else
+#include "opencv2/cv.hpp"
+#endif
 
 using namespace std;
 

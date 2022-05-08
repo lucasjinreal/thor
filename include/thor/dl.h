@@ -39,7 +39,7 @@
 #include "iostream"
 #include "numeric"
 #include "string"
-#include "structures.h"
+#include "./structures.h"
 #include "vector"
 
 #ifdef USE_PROTOBUF

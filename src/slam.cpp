@@ -35,7 +35,7 @@
 //
 
 #ifdef USE_OPENCV
-#include "include/slam.h"
+#include "thor/slam.h"
 
 using namespace thor;
 

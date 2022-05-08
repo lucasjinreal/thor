@@ -27,8 +27,8 @@ case "$(uname -s)" in
 
 Darwin)
     echo 'macOS'
-    rm include/proto/*.pb.cc
-    rm include/proto/*.pb.h
+    rm include/thor/proto/*.pb.cc
+    rm include/thor/proto/*.pb.h
     # brew install protobuf
 
     ;;
