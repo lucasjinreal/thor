@@ -78,7 +78,7 @@ void thor::CvxText::setFont(int *type, cv::Scalar *size, bool *underline, float 
   // 参数合法性检查
   if (type)
   {
-    if (type >= 0)
+    if (*type >= 0)
       m_fontType = *type;
   }
   if (size)

@@ -7,8 +7,8 @@ set(CMAKE_CXX_FLAGS  "-fPIC")
 option(USE_OPENCV "enable OpenCV in vis modules" ON)
 option(USE_EIGEN "enable build with eigen" OFF)
 option(USE_CV_EX "enable additional cv draw ability" OFF)
-option(USE_PROTOBUF "enable protobuf related components." ON)
-option(USE_CURL "enable curl related components." ON)
+option(USE_PROTOBUF "enable protobuf related components." OFF)
+option(USE_CURL "enable curl related components." OFF)
 option(BUILD_STATIC "enable to build static thor lib" OFF)
 option(DEBUG "Enable debug mode, for develop" ON)
 
@@ -26,7 +26,9 @@ if (APPLE)
 endif()
 
 if (USE_CV_EX)
-    include_directories(/usr/include/freetype2/)
+    # include_directories(/usr/include/freetype2/)
+    add_subdirectory(3rd/freetype)
+    include_directories(3rd/freetype/include)
     add_definitions(-DUSE_CV_EX)
 endif ()
 
@@ -62,7 +64,7 @@ if (USE_CURL)
     endif ()
 else()
     message(DEBUG $USE_CURL)
-    message(FATAL_ERROR "thor need build with curl, did u installed libcurl4-openssl-dev?")
+    message(STATUS "built without curl")
 endif ()
 
 
@@ -133,6 +135,10 @@ endif ()
 
 if (USE_CURL)
     target_link_libraries(thor ${CURL_LIBRARIES})
+endif ()
+
+if (USE_CV_EX)
+    target_link_libraries(thor freetype)
 endif ()
 
 set_target_properties(

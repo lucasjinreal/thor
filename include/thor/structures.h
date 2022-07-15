@@ -29,7 +29,7 @@
 #include "iostream"
 
 #ifdef __APPLE__
-#include "opencv4/opencv2/core.hpp"
+#include "opencv2/core.hpp"
 #else
 #include "opencv2/cv.hpp"
 #endif

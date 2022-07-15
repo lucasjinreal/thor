@@ -25,68 +25,65 @@
 // Created by jintian on 19-4-17.
 //
 
-#ifndef THOR_SRC_CV_EX_H_
-#define THOR_SRC_CV_EX_H_
-
+#pragma once
 
 #ifdef USE_CV_EX
-#include <freetype2/freetype/config/ftheader.h>
+#include "freetype/config/ftheader.h"
 #include FT_FREETYPE_H
+#include "freetype2/freetype/freetype.h"
+#include <freetype2/ft2build.h>
+
+
+#include <assert.h>
+#include <cmath>
+#include <ctype.h>
+#include <locale.h>
 #include <opencv2/opencv.hpp>
 #include <wchar.h>
-#include <assert.h>
-#include <locale.h>
-#include <ctype.h>
-#include <cmath>
 
+namespace thor {
 
-
-
-namespace thor{
-
-class CvxText
-{
- public:
+class CvxText {
+public:
   CvxText(const char *freeType);
   virtual ~CvxText();
-  void getFont(int *type, cv::Scalar *size = nullptr, bool *underline = nullptr, float *diaphaneity = nullptr);
-  void setFont(int *type, cv::Scalar *size = nullptr, bool *underline = nullptr, float *diaphaneity = nullptr);
+  void getFont(int *type, cv::Scalar *size = nullptr, bool *underline = nullptr,
+               float *diaphaneity = nullptr);
+  void setFont(int *type, cv::Scalar *size = nullptr, bool *underline = nullptr,
+               float *diaphaneity = nullptr);
 
   void restoreFont();
 
   int putText(cv::Mat &img, char *text, cv::Point pos);
   int putText(cv::Mat &img, const wchar_t *text, cv::Point pos);
   int putText(cv::Mat &img, const char *text, cv::Point pos, cv::Scalar color);
-  int putText(cv::Mat &img, const wchar_t *text, cv::Point pos, cv::Scalar color);
+  int putText(cv::Mat &img, const wchar_t *text, cv::Point pos,
+              cv::Scalar color);
 
-  inline static int ToWchar(char *&src, wchar_t *&dest, const char *locale = "zh_CN.utf8")
-  {
-    if (src == NULL)
-    {
+  inline static int ToWchar(char *&src, wchar_t *&dest,
+                            const char *locale = "zh_CN.utf8") {
+    if (src == NULL) {
       dest = NULL;
       return 0;
     }
     setlocale(LC_CTYPE, locale);
     int w_size = mbstowcs(NULL, src, 0) + 1;
-    if (w_size == 0)
-    {
+    if (w_size == 0) {
       dest = NULL;
       return -1;
     }
     dest = new wchar_t[w_size];
-    if (!dest)
-    {
+    if (!dest) {
       return -1;
     }
     int ret = mbstowcs(dest, src, strlen(src) + 1);
-    if (ret <= 0)
-    {
+    if (ret <= 0) {
       return -1;
     }
     return 0;
   }
 
- private:
+private:
   CvxText &operator=(const CvxText &);
   void putWChar(cv::Mat &img, wchar_t wc, cv::Point &pos, cv::Scalar color);
 
@@ -97,8 +94,6 @@ class CvxText
   bool m_fontUnderline;
   float m_fontDiaphaneity;
 };
-}
+
+} // namespace thor
 #endif
-
-
-#endif //THOR_SRC_CV_EX_H_
